@@ -258,7 +258,7 @@ export const useLibrary = create<LibraryState>()(
           cover: meta.cover,
           entries: [],
         })
-        void writeUserBook(book, get, set)
+        void writeUserBook(book, get, set, true)
         return id
       },
 
@@ -275,6 +275,7 @@ export const useLibrary = create<LibraryState>()(
           normalizeBook({ ...book, entries: [...book.entries, entry] }),
           get,
           set,
+          true,
         )
       },
 
@@ -353,11 +354,16 @@ export const useLibrary = create<LibraryState>()(
   ),
 )
 
-/** Persist a book as user-owned (adopts seed books on first edit) + sync state. */
+/**
+ * Persist a book as user-owned (adopts seed books on first edit) + sync state.
+ * `activate` turns the book on when it is new content the user just added;
+ * plain edits leave an intentionally disabled book disabled.
+ */
 async function writeUserBook(
   book: Book,
   get: () => LibraryState,
   set: (partial: Partial<LibraryState>) => void,
+  activate = false,
 ): Promise<void> {
   await putBookRecord({ id: book.id, origin: 'user', book })
   const s = get()
@@ -368,9 +374,10 @@ async function writeUserBook(
     books: { ...s.books, [book.id]: book },
     origins: { ...s.origins, [book.id]: 'user' },
     manifest,
-    activeBookIds: s.activeBookIds.includes(book.id)
-      ? s.activeBookIds
-      : [...s.activeBookIds, book.id],
+    activeBookIds:
+      activate && !s.activeBookIds.includes(book.id)
+        ? [...s.activeBookIds, book.id]
+        : s.activeBookIds,
   })
 }
 
