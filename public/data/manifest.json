@@ -1,0 +1,16 @@
+{
+  "books": [
+    {
+      "id": "swade-example",
+      "title": "Livro Exemplo",
+      "abbrev": "EX",
+      "file": "swade-example.json",
+      "languages": [
+        "pt-BR",
+        "en"
+      ],
+      "publisher": "Conteúdo original de exemplo",
+      "category": "example"
+    }
+  ]
+}

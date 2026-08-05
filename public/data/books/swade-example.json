@@ -1,0 +1,455 @@
+{
+  "id": "swade-example",
+  "title": "Livro Exemplo",
+  "abbrev": "EX",
+  "languages": [
+    "pt-BR",
+    "en"
+  ],
+  "version": "1.0",
+  "publisher": "Conteúdo original de exemplo",
+  "entries": [
+    {
+      "type": "ancestry",
+      "name": {
+        "pt-BR": "Cindrico",
+        "en": "Cindric"
+      },
+      "summary": {
+        "pt-BR": "Povo de pele de cinza nascido perto de vulcões."
+      },
+      "description": {
+        "pt-BR": "Resistência ao Calor: +2 contra calor e fogo.\\nSopro de Brasa: uma vez por combate, 2d4 em Cone.\\nFrágil ao Frio: -2 contra efeitos de frio."
+      }
+    },
+    {
+      "type": "ancestry",
+      "name": {
+        "pt-BR": "Vidrento",
+        "en": "Glassborn"
+      },
+      "summary": {
+        "pt-BR": "Seres translúcidos moldados a partir de areia encantada."
+      },
+      "description": {
+        "pt-BR": "Corpo Cristalino: Armadura +1.\\nReflexo Prismático: +1 para se esconder sob luz forte.\\nEstilhaço: ao ser Incapacitado, causa 2d4 em quem estiver adjacente."
+      }
+    },
+    {
+      "type": "edge",
+      "name": {
+        "pt-BR": "Herdeiro das Brasas",
+        "en": "Ember Heir"
+      },
+      "category": "background",
+      "rank": "novice",
+      "requirements": {
+        "pt-BR": "Novato, Espírito d6+"
+      },
+      "summary": {
+        "pt-BR": "Rerrola testes contra fogo."
+      },
+      "description": {
+        "pt-BR": "Ganha uma rerrolagem em testes para resistir a fogo e calor."
+      }
+    },
+    {
+      "type": "edge",
+      "name": {
+        "pt-BR": "Guarda de Ferro",
+        "en": "Iron Guard"
+      },
+      "category": "combat",
+      "rank": "seasoned",
+      "requirements": {
+        "pt-BR": "Experiente, Lutar d8+"
+      },
+      "summary": {
+        "pt-BR": "+1 de Aparar ao defender aliados."
+      },
+      "description": {
+        "pt-BR": "Enquanto adjacente a um aliado, ambos recebem +1 de Aparar."
+      }
+    },
+    {
+      "type": "edge",
+      "name": {
+        "pt-BR": "Voz de Mel",
+        "en": "Honeyed Voice"
+      },
+      "category": "social",
+      "rank": "novice",
+      "requirements": {
+        "pt-BR": "Novato, Persuadir d8+"
+      },
+      "summary": {
+        "pt-BR": "+2 em Persuadir na primeira impressão."
+      },
+      "description": {
+        "pt-BR": "Recebe +2 em Persuadir ao interagir com alguém pela primeira vez."
+      }
+    },
+    {
+      "type": "hindrance",
+      "name": {
+        "pt-BR": "Colecionador",
+        "en": "Hoarder"
+      },
+      "category": "minor",
+      "description": {
+        "pt-BR": "Não consegue abandonar itens; -1 em testes para deixar um tesouro para trás."
+      }
+    },
+    {
+      "type": "hindrance",
+      "name": {
+        "pt-BR": "Juramento de Sangue",
+        "en": "Blood Oath"
+      },
+      "category": "major",
+      "description": {
+        "pt-BR": "Deve cumprir um juramento pessoal, mesmo em risco de vida."
+      }
+    },
+    {
+      "type": "hindrance",
+      "name": {
+        "pt-BR": "Sussurros",
+        "en": "Whispers"
+      },
+      "category": "minor/major",
+      "description": {
+        "pt-BR": "Menor: distrações ocasionais. Maior: -1 em Perceber por ouvir vozes."
+      }
+    },
+    {
+      "type": "skill",
+      "name": {
+        "pt-BR": "Alquimia de Vidro",
+        "en": "Glassmithing"
+      },
+      "description": {
+        "pt-BR": "Moldar e encantar objetos de vidro e cristal."
+      },
+      "fields": {
+        "attribute": {
+          "pt-BR": "Esperteza",
+          "en": "Smarts"
+        }
+      }
+    },
+    {
+      "type": "skill",
+      "name": {
+        "pt-BR": "Domar Brasas",
+        "en": "Ember Taming"
+      },
+      "description": {
+        "pt-BR": "Controlar pequenas chamas e criaturas de fogo."
+      },
+      "fields": {
+        "attribute": {
+          "pt-BR": "Espírito",
+          "en": "Spirit"
+        }
+      }
+    },
+    {
+      "type": "power",
+      "name": {
+        "pt-BR": "Manto de Cinzas",
+        "en": "Ash Mantle"
+      },
+      "rank": "novice",
+      "summary": {
+        "pt-BR": "Uma armadura de cinzas flutuantes."
+      },
+      "description": {
+        "pt-BR": "Concede Armadura +2 (+4 com um aumento).\\nModificadores: Fumaça (+1 PP) obscurece a área."
+      },
+      "fields": {
+        "pp": "2",
+        "range": {
+          "pt-BR": "Toque"
+        },
+        "duration": {
+          "pt-BR": "5"
+        }
+      }
+    },
+    {
+      "type": "power",
+      "name": {
+        "pt-BR": "Passo de Vidro",
+        "en": "Glass Step"
+      },
+      "rank": "seasoned",
+      "summary": {
+        "pt-BR": "Teletransporte curto entre superfícies reflexivas."
+      },
+      "description": {
+        "pt-BR": "Move-se instantaneamente até 20 metros entre duas superfícies reflexivas.\\nModificadores: Levar Aliado (+2 PP)."
+      },
+      "fields": {
+        "pp": "3",
+        "range": {
+          "pt-BR": "Especial"
+        },
+        "duration": {
+          "pt-BR": "Instantâneo"
+        }
+      }
+    },
+    {
+      "type": "weapon",
+      "name": {
+        "pt-BR": "Machado de Obsidiana",
+        "en": "Obsidian Axe"
+      },
+      "category": "melee",
+      "fields": {
+        "damage": "For+d8",
+        "minStr": "d8",
+        "weight": "4",
+        "cost": "350"
+      }
+    },
+    {
+      "type": "weapon",
+      "name": {
+        "pt-BR": "Arco de Corda Prateada",
+        "en": "Silverstring Bow"
+      },
+      "category": "ranged",
+      "fields": {
+        "damage": "2d6",
+        "range": "12/24/48",
+        "rof": "1",
+        "minStr": "d6",
+        "weight": "3",
+        "cost": "400"
+      }
+    },
+    {
+      "type": "weapon",
+      "name": {
+        "pt-BR": "Pistola de Faísca",
+        "en": "Sparklock Pistol"
+      },
+      "category": "firearm",
+      "fields": {
+        "damage": "2d6-1",
+        "range": "10/20/40",
+        "rof": "1",
+        "shots": "1",
+        "minStr": "d4",
+        "weight": "2",
+        "cost": "250"
+      }
+    },
+    {
+      "type": "armor",
+      "name": {
+        "pt-BR": "Cota de Escamas de Vidro",
+        "en": "Glassscale Mail"
+      },
+      "category": "medieval",
+      "fields": {
+        "armor": "3",
+        "minStr": "d8",
+        "weight": "18",
+        "cost": "500"
+      }
+    },
+    {
+      "type": "armor",
+      "name": {
+        "pt-BR": "Colete de Fibra Cinza",
+        "en": "Grey Fiber Vest"
+      },
+      "category": "modern",
+      "fields": {
+        "armor": "2",
+        "minStr": "d6",
+        "weight": "6",
+        "cost": "600"
+      }
+    },
+    {
+      "type": "gear",
+      "name": {
+        "pt-BR": "Lanterna de Brasa",
+        "en": "Ember Lantern"
+      },
+      "category": "adventuring",
+      "summary": {
+        "pt-BR": "Luz que nunca se apaga na chuva."
+      },
+      "description": {
+        "pt-BR": "Ilumina um raio de 6 metros; imune a vento e água."
+      },
+      "fields": {
+        "cost": "50",
+        "weight": "1"
+      }
+    },
+    {
+      "type": "gear",
+      "name": {
+        "pt-BR": "Frasco de Reflexo",
+        "en": "Reflection Flask"
+      },
+      "category": "magic-item",
+      "summary": {
+        "pt-BR": "Guarda uma imagem para criar um duplo."
+      },
+      "description": {
+        "pt-BR": "Cria uma cópia ilusória do usuário por 3 rodadas."
+      },
+      "fields": {
+        "cost": "300",
+        "weight": "0,5"
+      }
+    },
+    {
+      "type": "gear",
+      "name": {
+        "pt-BR": "Carroça Blindada",
+        "en": "Armored Wagon"
+      },
+      "category": "ground",
+      "fields": {
+        "topSpeed": "20",
+        "toughness": "12 (3)",
+        "crew": "1+5",
+        "cost": "2000"
+      }
+    },
+    {
+      "type": "gear",
+      "name": {
+        "pt-BR": "Planador de Cinzas",
+        "en": "Ash Glider"
+      },
+      "category": "air",
+      "fields": {
+        "topSpeed": "60",
+        "toughness": "9 (2)",
+        "crew": "1",
+        "cost": "5000"
+      }
+    },
+    {
+      "type": "rule",
+      "name": {
+        "pt-BR": "Testes de Fôlego",
+        "en": "Grit Rolls"
+      },
+      "category": "core",
+      "description": {
+        "pt-BR": "Ao acumular fadiga, role Vigor no fim da cena; sucesso remove 1 nível de Fadiga."
+      }
+    },
+    {
+      "type": "rule",
+      "name": {
+        "pt-BR": "Investida Ardente",
+        "en": "Burning Charge"
+      },
+      "category": "combat",
+      "description": {
+        "pt-BR": "Ao correr e atacar, adicione +2 de dano mas fique Vulnerável até seu próximo turno."
+      }
+    },
+    {
+      "type": "rule",
+      "name": {
+        "pt-BR": "Forja de Grupo",
+        "en": "Group Forge"
+      },
+      "category": "tools",
+      "description": {
+        "pt-BR": "Vários personagens somam sucessos em uma Tarefa Dramática de criação de item."
+      }
+    },
+    {
+      "type": "rule",
+      "name": {
+        "pt-BR": "Brasas Heroicas",
+        "en": "Heroic Embers"
+      },
+      "description": {
+        "pt-BR": "Heróis começam com 1 Bene extra que só pode ser gasto em testes de Espírito."
+      },
+      "category": "setting"
+    },
+    {
+      "type": "rule",
+      "name": {
+        "pt-BR": "Mundo Frágil",
+        "en": "Fragile World"
+      },
+      "description": {
+        "pt-BR": "Falhas Críticas também quebram um item de equipamento à escolha do Mestre."
+      },
+      "category": "setting"
+    },
+    {
+      "type": "bestiary",
+      "name": {
+        "pt-BR": "Golem de Brasas",
+        "en": "Ember Golem"
+      },
+      "summary": {
+        "pt-BR": "Construto de rocha incandescente."
+      },
+      "description": {
+        "pt-BR": "Uma pilha andante de pedras em brasa, forjada para guardar ruínas."
+      },
+      "fields": {
+        "wildCard": true,
+        "attributes": {
+          "pt-BR": "Agilidade d6, Esperteza d4, Espírito d6, Força d12, Vigor d12"
+        },
+        "skills": {
+          "pt-BR": "Lutar d8, Perceber d6"
+        },
+        "pace": "5",
+        "parry": "6",
+        "toughness": "12 (3)",
+        "specialAbilities": {
+          "pt-BR": "Blindado: Armadura +3.\\nCorpo Ardente: quem o atacar corpo a corpo sofre 1d6 de dano.\\nConstruto: +2 para se recuperar de Abalado; imune a veneno e doença.\\nFraqueza (Água): sofre +4 de dano de ataques de água."
+        }
+      }
+    },
+    {
+      "type": "bestiary",
+      "name": {
+        "pt-BR": "Espreitador de Vidro",
+        "en": "Glass Stalker"
+      },
+      "summary": {
+        "pt-BR": "Predador quase invisível de desertos de vidro."
+      },
+      "description": {
+        "pt-BR": "Uma fera translúcida que caça entre dunas cristalinas."
+      },
+      "fields": {
+        "wildCard": false,
+        "attributes": {
+          "pt-BR": "Agilidade d10, Esperteza d6(A), Espírito d6, Força d8, Vigor d6"
+        },
+        "skills": {
+          "pt-BR": "Lutar d8, Furtividade d12, Perceber d8"
+        },
+        "pace": "8",
+        "parry": "6",
+        "toughness": "5",
+        "specialAbilities": {
+          "pt-BR": "Camuflagem: +2 para se esconder à luz do dia.\\nGarras: For+d6.\\nSaltador: ignora terreno difícil ao investir."
+        }
+      }
+    }
+  ],
+  "cover": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTYwIiB2aWV3Qm94PSIwIDAgNDAwIDU2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iaHNsKDI4IDQwJSAzMCUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woOCA0NSUgMTYlKSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjU2MCIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzNjgiIGhlaWdodD0iNTI4IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yNSkiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyMDAiIHk9Ijk1IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuODUpIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI3MiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVYPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjMwMCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMzYiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MaXZybzwvdGV4dD4KPHRleHQgeD0iMjAwIiB5PSIzNDUiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjM2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RXhlbXBsbzwvdGV4dD4KPC9zdmc+"
+}
