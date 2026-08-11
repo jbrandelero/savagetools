@@ -79,6 +79,14 @@ export function EntryView({ entryKey }: { entryKey: string }) {
         </p>
       </header>
 
+      {entry.image && (
+        <img
+          src={entry.image}
+          alt={name}
+          className="max-h-56 w-auto max-w-full rounded border border-black/10 object-contain dark:border-white/10"
+        />
+      )}
+
       <VariationPicker group={group} currentSource={entry.source} />
 
       {requirements && (

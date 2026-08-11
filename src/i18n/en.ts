@@ -27,6 +27,12 @@ export const en = {
     deleteConfirm: 'Delete this item?',
     noBook: 'Create or upload a book first to add items.',
     savedToast: 'Item saved',
+    image: 'Image',
+    imagePick: 'Choose image',
+    imageRemove: 'Remove image',
+    imageHint: 'Stored in the book itself, resized to 512 px.',
+    imageTooBig: 'Image too large (max 4 MB).',
+    imageInvalid: 'Could not read that image.',
   },
   link: {
     ignore: 'ignore',

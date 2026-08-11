@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useLibrary, EXAMPLE_ID } from '@/store/useLibrary'
 import { useToast } from '@/store/useToast'
 import { useContentLang, useT } from '@/hooks'
 import { langShort } from '@/i18n'
 import { resolveText } from '@/lib/localized'
 import { canonicalKey } from '@/lib/slug'
+import { fileToEntryImage } from '@/lib/image'
 import {
   ENTRY_TYPES,
   RANKS,
@@ -79,6 +80,9 @@ export function EntryEditor({
   const [category, setCategory] = useState(initial?.category ?? '')
   const [rank, setRank] = useState(initial?.rank ?? '')
   const [tags, setTags] = useState((initial?.tags ?? []).join(', '))
+  const [image, setImage] = useState<string | undefined>(initial?.image)
+  const [imageError, setImageError] = useState<string | null>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
   const [keyOverride, setKeyOverride] = useState(initial?.key ?? '')
   const [fields, setFields] = useState<Record<string, string>>(() => {
     const f: Record<string, string> = {}
@@ -99,6 +103,21 @@ export function EntryEditor({
 
   const setField = (k: string, v: string) =>
     setFields((s) => ({ ...s, [k]: v }))
+
+  async function pickImage(files: FileList | null) {
+    const file = files?.[0]
+    if (imageRef.current) imageRef.current.value = ''
+    if (!file) return
+    const result = await fileToEntryImage(file)
+    if (!result.ok) {
+      setImageError(
+        result.error === 'tooBig' ? t.editor.imageTooBig : t.editor.imageInvalid,
+      )
+      return
+    }
+    setImageError(null)
+    setImage(result.dataUrl)
+  }
 
   function save() {
     const nameStr = localToStr(name, lang) || localToStr(name, 'en')
@@ -123,6 +142,7 @@ export function EntryEditor({
       ...(requirements ? { requirements } : {}),
       ...(summary ? { summary } : {}),
       ...(description ? { description } : {}),
+      ...(image ? { image } : {}),
       ...(Object.keys(outFields).length ? { fields: outFields } : {}),
       tags: tags.split(',').map((x) => x.trim()).filter(Boolean),
     }
@@ -237,6 +257,47 @@ export function EntryEditor({
             className={inputCls}
           />
         </Field>
+
+        <div className="block text-xs">
+          <span className="mb-0.5 block opacity-60">{t.editor.image}</span>
+          <div className="flex items-center gap-2">
+            {image && (
+              <img
+                src={image}
+                alt=""
+                className="h-16 w-16 rounded border border-black/10 object-cover dark:border-white/10"
+              />
+            )}
+            <input
+              ref={imageRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => void pickImage(e.target.files)}
+            />
+            <button
+              onClick={() => imageRef.current?.click()}
+              className="rounded border border-black/15 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+            >
+              {t.editor.imagePick}
+            </button>
+            {image && (
+              <button
+                onClick={() => {
+                  setImage(undefined)
+                  setImageError(null)
+                }}
+                className="opacity-60 hover:text-red-500 hover:opacity-100"
+              >
+                {t.editor.imageRemove}
+              </button>
+            )}
+            <span className="opacity-50">{t.editor.imageHint}</span>
+          </div>
+          {imageError && (
+            <p className="mt-1 text-red-600 dark:text-red-400">{imageError}</p>
+          )}
+        </div>
 
         {/* Type-specific fields */}
         {(TYPE_FIELDS[type]?.length ?? 0) > 0 && (

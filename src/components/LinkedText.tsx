@@ -138,29 +138,42 @@ function EntryLink({
             onMouseLeave={scheduleClose}
           >
             <div className="rounded border border-black/10 bg-white p-2 text-left text-xs shadow-xl dark:border-white/15 dark:bg-[#1c1815]">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    navigate(`/entry/${encodeURIComponent(entry.key)}`)
-                    setPos(null)
-                  }}
-                  className="font-display font-semibold text-sky-700 hover:underline dark:text-sky-300"
-                >
-                  {resolveText(entry.name, lang)}
-                </button>
-                <span
-                  style={sourceBadgeStyle(entry.sourceAbbrev)}
-                  className="ml-auto rounded px-1 text-[10px] font-medium"
-                >
-                  {entry.sourceAbbrev}
-                </span>
+              <div className="flex gap-2">
+                {entry.image && (
+                  <img
+                    src={entry.image}
+                    alt=""
+                    className="h-12 w-12 shrink-0 rounded border border-black/10 object-cover dark:border-white/10"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        navigate(`/entry/${encodeURIComponent(entry.key)}`)
+                        setPos(null)
+                      }}
+                      className="font-display font-semibold text-sky-700 hover:underline dark:text-sky-300"
+                    >
+                      {resolveText(entry.name, lang)}
+                    </button>
+                    <span
+                      style={sourceBadgeStyle(entry.sourceAbbrev)}
+                      className="ml-auto rounded px-1 text-[10px] font-medium"
+                    >
+                      {entry.sourceAbbrev}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 opacity-60">
+                    {t.types[entry.type]}
+                    {entry.category ? ` · ${categoryLabel(entry.category, lang)}` : ''}
+                    {entry.rank ? ` · ${t.ranks[entry.rank]}` : ''}
+                  </div>
+                  {summary && (
+                    <div className="mt-1 line-clamp-5 opacity-90">{summary}</div>
+                  )}
+                </div>
               </div>
-              <div className="mt-0.5 opacity-60">
-                {t.types[entry.type]}
-                {entry.category ? ` · ${categoryLabel(entry.category, lang)}` : ''}
-                {entry.rank ? ` · ${t.ranks[entry.rank]}` : ''}
-              </div>
-              {summary && <div className="mt-1 line-clamp-5 opacity-90">{summary}</div>}
               <div className="mt-1 flex justify-end border-t border-black/5 pt-1 dark:border-white/10">
                 <button
                   onClick={() => {

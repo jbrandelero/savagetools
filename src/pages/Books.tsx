@@ -6,6 +6,7 @@ import { EXAMPLE_BOOK } from '@/data/exampleBook'
 import { Disclaimer } from '@/components/Disclaimer'
 import { langBadge } from '@/i18n'
 import { downloadText } from '@/lib/download'
+import { MAX_IMAGE_BYTES, readAsDataUrl } from '@/lib/image'
 
 /** Editable book metadata — the shape the create/edit form works with. */
 interface BookMetaDraft {
@@ -18,16 +19,6 @@ interface BookMetaDraft {
 }
 
 const BOOK_CATEGORIES = ['homebrew', 'core', 'compendium'] as const
-const MAX_COVER_BYTES = 4 * 1024 * 1024
-
-function readAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result))
-    reader.onerror = () => reject(reader.error)
-    reader.readAsDataURL(file)
-  })
-}
 
 const fieldCls =
   'rounded border border-black/15 bg-white px-2 py-1 text-sm dark:border-white/15 dark:bg-black/30'
@@ -59,7 +50,7 @@ function BookForm({
   async function pickCover(files: FileList | null) {
     const file = files?.[0]
     if (!file) return
-    if (file.size > MAX_COVER_BYTES) {
+    if (file.size > MAX_IMAGE_BYTES) {
       setError(t.books.coverTooBig)
       return
     }

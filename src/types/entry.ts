@@ -62,6 +62,8 @@ export interface Entry {
   summary?: LocalizedText
   description?: LocalizedText
   page?: number
+  /** Illustration as a base64 `data:` URI — the app stores no file paths. */
+  image?: string
   tags?: string[]
   /** Type-specific structured data (power points, damage, range, ...). */
   fields?: Record<string, unknown>

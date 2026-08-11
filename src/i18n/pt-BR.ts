@@ -29,6 +29,12 @@ export const ptBR: Dict = {
     deleteConfirm: 'Excluir este item?',
     noBook: 'Crie ou envie um livro primeiro para adicionar itens.',
     savedToast: 'Item salvo',
+    image: 'Imagem',
+    imagePick: 'Escolher imagem',
+    imageRemove: 'Remover imagem',
+    imageHint: 'Guardada no próprio livro, redimensionada para 512 px.',
+    imageTooBig: 'Imagem muito grande (máx. 4 MB).',
+    imageInvalid: 'Não foi possível ler essa imagem.',
   },
   link: {
     ignore: 'ignorar',
