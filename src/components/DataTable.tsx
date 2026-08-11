@@ -240,24 +240,26 @@ export function DataTable(props: DataTableProps): JSX.Element {
           </th>
         </tr>
       </thead>
-      <tbody>
-        {showGroups
-          ? groupsByCat.map((g) => (
-              <Fragment key={g.label}>
-                <tr>
-                  <th
-                    colSpan={colTotal}
-                    className="sticky top-7 z-[9] border-y border-brass/30 bg-brass/10 px-2 py-1 text-left text-xs font-semibold uppercase tracking-wide text-brass"
-                  >
-                    {g.label}
-                    <span className="ml-2 font-normal opacity-60">{g.rows.length}</span>
-                  </th>
-                </tr>
-                {g.rows.map(renderRow)}
-              </Fragment>
-            ))
-          : sorted.map(renderRow)}
-      </tbody>
+      {showGroups ? (
+        // One <tbody> per category so each sticky header is scoped to its own
+        // group: it scrolls away when the group ends instead of piling up.
+        groupsByCat.map((g) => (
+          <tbody key={g.label}>
+            <tr>
+              <th
+                colSpan={colTotal}
+                className="sticky top-7 z-[9] border-y border-brass/30 bg-brass/10 px-2 py-1 text-left text-xs font-semibold uppercase tracking-wide text-brass"
+              >
+                {g.label}
+                <span className="ml-2 font-normal opacity-60">{g.rows.length}</span>
+              </th>
+            </tr>
+            {g.rows.map(renderRow)}
+          </tbody>
+        ))
+      ) : (
+        <tbody>{sorted.map(renderRow)}</tbody>
+      )}
     </table>
   )
 }
