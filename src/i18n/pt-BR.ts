@@ -125,6 +125,7 @@ export const ptBR: Dict = {
     empty: 'Nada aqui nos livros ativos.',
     filterRank: 'Grau',
     filterCategory: 'Categoria',
+    uncategorized: 'Sem categoria',
   },
   entry: {
     name: 'Nome',

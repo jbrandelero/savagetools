@@ -4,6 +4,7 @@ import type { SourcedEntry } from '@/types/entry'
 import type { Column } from '@/data/columns'
 import { sourceBadgeStyle } from '@/lib/sources'
 import { resolveText } from '@/lib/localized'
+import { categoryLabel } from '@/i18n/categories'
 import { useT, useSourceName } from '@/hooks'
 
 export interface DataTableProps {
@@ -74,6 +75,122 @@ export function DataTable(props: DataTableProps): JSX.Element {
     return rows
   }, [entries, sortKey, sortDir, sortValueFor])
 
+  // Group sorted rows by category. Groups are ordered alphabetically by their
+  // localized label; the uncategorized bucket sinks to the bottom. When every
+  // row shares a single category, grouping is skipped (one flat list).
+  const groupsByCat = useMemo(() => {
+    const buckets = new Map<string, { label: string; rows: SourcedEntry[] }>()
+    for (const e of sorted) {
+      const slug = e.category ?? ''
+      let bucket = buckets.get(slug)
+      if (!bucket) {
+        bucket = {
+          label: slug ? categoryLabel(slug, lang) : t.browse.uncategorized,
+          rows: [],
+        }
+        buckets.set(slug, bucket)
+      }
+      bucket.rows.push(e)
+    }
+    return [...buckets.entries()]
+      .sort(([sa, a], [sb, b]) => {
+        if (!sa) return 1
+        if (!sb) return -1
+        return a.label.localeCompare(b.label)
+      })
+      .map(([, b]) => b)
+  }, [sorted, lang, t])
+
+  const showGroups = groupsByCat.length > 1
+  const colTotal = columns.length + 1 // + source column
+
+  function renderRow(entry: SourcedEntry): JSX.Element {
+    const selected = entry.key === selectedKey
+    const extra = variationCount(entry.key) - 1
+    const isOpen = expanded.has(entry.key)
+    const others = extra > 0 && variations ? variations(entry.key) : []
+    return (
+      <Fragment key={entry.key}>
+        <tr
+          onClick={() => onSelect(entry)}
+          className={`cursor-pointer odd:bg-black/[0.02] even:bg-transparent hover:bg-black/5 dark:odd:bg-white/[0.03] dark:hover:bg-white/5 ${
+            selected ? 'border-l-2 border-blood bg-blood/15' : ''
+          }`}
+        >
+          {columns.map((col) => {
+            const content = col.render ? col.render(entry, lang, t) : col.value(entry, lang)
+            if (col.key === 'name') {
+              return (
+                <td key={col.key} className={`px-2 py-1 ${alignClass(col.align)}`}>
+                  {extra > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleExpand(entry.key)
+                      }}
+                      className="mr-1 select-none text-brass"
+                      title={`${extra} other version${extra > 1 ? 's' : ''}`}
+                    >
+                      {isOpen ? '▾' : '▸'}
+                    </button>
+                  )}
+                  {content}
+                  {extra > 0 && (
+                    <span className="ml-1.5 rounded bg-brass/20 px-1 py-0.5 text-[10px] font-medium text-brass">
+                      +{extra}
+                    </span>
+                  )}
+                </td>
+              )
+            }
+            return (
+              <td key={col.key} className={`px-2 py-1 ${alignClass(col.align)}`}>
+                {content}
+              </td>
+            )
+          })}
+          <td className="px-2 py-1 text-left">
+            <span
+              style={sourceBadgeStyle(entry.sourceAbbrev)}
+              title={sourceName(entry.sourceAbbrev)}
+              className="rounded px-1.5 py-0.5 text-[11px] font-medium"
+            >
+              {entry.sourceAbbrev}
+            </span>
+          </td>
+        </tr>
+
+        {isOpen &&
+          others.map((v) => (
+            <tr
+              key={entry.key + '::' + v.source}
+              onClick={() => (onSelectVariation ?? onSelect)(v)}
+              className={`cursor-pointer bg-brass/[0.06] text-xs hover:bg-brass/15 ${
+                v.source === entry.source ? 'font-medium' : ''
+              }`}
+            >
+              <td colSpan={columns.length} className="px-2 py-1 pl-8">
+                <span className="mr-1 opacity-40">↳</span>
+                {resolveText(v.name, lang)}
+                {v.source === entry.source && (
+                  <span className="ml-1 text-brass">✓</span>
+                )}
+              </td>
+              <td className="px-2 py-1 text-left">
+                <span
+                  style={sourceBadgeStyle(v.sourceAbbrev)}
+                  title={sourceName(v.sourceAbbrev)}
+                  className="rounded px-1.5 py-0.5 text-[11px] font-medium"
+                >
+                  {v.sourceAbbrev}
+                </span>
+              </td>
+            </tr>
+          ))}
+      </Fragment>
+    )
+  }
+
   function toggleSort(key: string): void {
     if (key === sortKey) {
       setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
@@ -124,92 +241,22 @@ export function DataTable(props: DataTableProps): JSX.Element {
         </tr>
       </thead>
       <tbody>
-        {sorted.map((entry) => {
-          const selected = entry.key === selectedKey
-          const extra = variationCount(entry.key) - 1
-          const isOpen = expanded.has(entry.key)
-          const others = extra > 0 && variations ? variations(entry.key) : []
-          return (
-            <Fragment key={entry.key}>
-              <tr
-                onClick={() => onSelect(entry)}
-                className={`cursor-pointer odd:bg-black/[0.02] even:bg-transparent hover:bg-black/5 dark:odd:bg-white/[0.03] dark:hover:bg-white/5 ${
-                  selected ? 'border-l-2 border-blood bg-blood/15' : ''
-                }`}
-              >
-                {columns.map((col) => {
-                  const content = col.render ? col.render(entry, lang, t) : col.value(entry, lang)
-                  if (col.key === 'name') {
-                    return (
-                      <td key={col.key} className={`px-2 py-1 ${alignClass(col.align)}`}>
-                        {extra > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleExpand(entry.key)
-                            }}
-                            className="mr-1 select-none text-brass"
-                            title={`${extra} other version${extra > 1 ? 's' : ''}`}
-                          >
-                            {isOpen ? '▾' : '▸'}
-                          </button>
-                        )}
-                        {content}
-                        {extra > 0 && (
-                          <span className="ml-1.5 rounded bg-brass/20 px-1 py-0.5 text-[10px] font-medium text-brass">
-                            +{extra}
-                          </span>
-                        )}
-                      </td>
-                    )
-                  }
-                  return (
-                    <td key={col.key} className={`px-2 py-1 ${alignClass(col.align)}`}>
-                      {content}
-                    </td>
-                  )
-                })}
-                <td className="px-2 py-1 text-left">
-                  <span
-                    style={sourceBadgeStyle(entry.sourceAbbrev)}
-                    title={sourceName(entry.sourceAbbrev)}
-                    className="rounded px-1.5 py-0.5 text-[11px] font-medium"
+        {showGroups
+          ? groupsByCat.map((g) => (
+              <Fragment key={g.label}>
+                <tr>
+                  <th
+                    colSpan={colTotal}
+                    className="sticky top-7 z-[9] border-y border-brass/30 bg-brass/10 px-2 py-1 text-left text-xs font-semibold uppercase tracking-wide text-brass"
                   >
-                    {entry.sourceAbbrev}
-                  </span>
-                </td>
-              </tr>
-
-              {isOpen &&
-                others.map((v) => (
-                  <tr
-                    key={entry.key + '::' + v.source}
-                    onClick={() => (onSelectVariation ?? onSelect)(v)}
-                    className={`cursor-pointer bg-brass/[0.06] text-xs hover:bg-brass/15 ${
-                      v.source === entry.source ? 'font-medium' : ''
-                    }`}
-                  >
-                    <td colSpan={columns.length} className="px-2 py-1 pl-8">
-                      <span className="mr-1 opacity-40">↳</span>
-                      {resolveText(v.name, lang)}
-                      {v.source === entry.source && (
-                        <span className="ml-1 text-brass">✓</span>
-                      )}
-                    </td>
-                    <td className="px-2 py-1 text-left">
-                      <span
-                        style={sourceBadgeStyle(v.sourceAbbrev)}
-                        title={sourceName(v.sourceAbbrev)}
-                        className="rounded px-1.5 py-0.5 text-[11px] font-medium"
-                      >
-                        {v.sourceAbbrev}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-            </Fragment>
-          )
-        })}
+                    {g.label}
+                    <span className="ml-2 font-normal opacity-60">{g.rows.length}</span>
+                  </th>
+                </tr>
+                {g.rows.map(renderRow)}
+              </Fragment>
+            ))
+          : sorted.map(renderRow)}
       </tbody>
     </table>
   )

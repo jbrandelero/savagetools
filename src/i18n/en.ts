@@ -123,6 +123,7 @@ export const en = {
     empty: 'Nothing here in the active books.',
     filterRank: 'Rank',
     filterCategory: 'Category',
+    uncategorized: 'Uncategorized',
   },
   entry: {
     name: 'Name',

@@ -375,7 +375,9 @@ export function Books() {
                         </span>
                       </div>
                       <div className="text-sm opacity-60">
-                        {m.abbrev} · {count} {t.books.entries} · {t.books.languages}:{' '}
+                        {m.abbrev}
+                        {book?.version && ` · v${book.version}`} · {count}{' '}
+                        {t.books.entries} · {t.books.languages}:{' '}
                         {m.languages.join(', ')}
                       </div>
                     </div>
