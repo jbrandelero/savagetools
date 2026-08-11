@@ -241,14 +241,17 @@ export function DataTable(props: DataTableProps): JSX.Element {
         </tr>
       </thead>
       {showGroups ? (
-        // One <tbody> per category so each sticky header is scoped to its own
-        // group: it scrolls away when the group ends instead of piling up.
+        // One <tbody> per category. Its header is sticky but bounded by its own
+        // tbody, so it pins below the main header while you scroll the group and
+        // is pushed out as the next category scrolls in — never stacking. The
+        // background is opaque so scrolling rows don't show through the pinned
+        // header.
         groupsByCat.map((g) => (
           <tbody key={g.label}>
             <tr>
               <th
                 colSpan={colTotal}
-                className="sticky top-7 z-[9] border-y border-brass/30 bg-brass/10 px-2 py-1 text-left text-xs font-semibold uppercase tracking-wide text-brass"
+                className="sticky top-[29px] z-[5] border-y border-brass/40 bg-parchment px-2 py-1 text-left text-xs font-semibold uppercase tracking-wide text-brass dark:bg-ink"
               >
                 {g.label}
                 <span className="ml-2 font-normal opacity-60">{g.rows.length}</span>
