@@ -24,13 +24,15 @@ export interface DataTableProps {
 const SOURCE_KEY = '__source__'
 
 /**
- * Source is always the last column and stays pinned to the right edge while the
- * rest of the table scrolls sideways. It needs an opaque background of its own
- * so the scrolling cells do not show through — which is why row striping stops
- * at its left border.
+ * Source is always the last column, 70 px wide in every grid, and stays pinned
+ * to the right edge while the rest of the table scrolls sideways. It needs an
+ * opaque background of its own so the scrolling cells do not show through —
+ * which is why row striping stops at its left border. Min and max width are
+ * both set: a plain `width` is only a hint to the table layout algorithm.
  */
+const SOURCE_WIDTH = 'w-[70px] min-w-[70px] max-w-[70px]'
 const SOURCE_CELL =
-  'sticky right-0 border-l border-black/5 px-2 py-1 text-left dark:border-white/10'
+  `sticky right-0 ${SOURCE_WIDTH} overflow-hidden border-l border-black/5 px-2 py-1 text-left dark:border-white/10`
 
 /** Page background, so scrolled cells cannot show through the pinned column. */
 const SOURCE_BODY_BG = 'bg-parchment dark:bg-[#15120f]'
