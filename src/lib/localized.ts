@@ -1,4 +1,4 @@
-import type { LocalizedText } from '@/types/entry'
+import type { Entry, LocalizedText } from '@/types/entry'
 
 /**
  * Resolve a LocalizedText to a string for the preferred language.
@@ -21,6 +21,22 @@ export function resolveText(
   if (baseHit) return text[baseHit]
 
   return text[keys[0]]
+}
+
+/**
+ * Read one of an entry's type-specific `fields` as display text. Arrays are
+ * joined, localized maps resolved, everything else stringified.
+ */
+export function entryField(
+  entry: Entry,
+  name: string,
+  lang: string,
+): string {
+  const v = entry.fields?.[name]
+  if (v == null) return ''
+  if (Array.isArray(v)) return v.join(', ')
+  if (typeof v === 'object') return resolveText(v as Record<string, string>, lang)
+  return String(v)
 }
 
 /** Languages a LocalizedText actually provides. */

@@ -31,6 +31,13 @@ export const ENTRY_TYPES: EntryType[] = [
   'bestiary',
 ]
 
+/** Types bought with money — every list of these shows a cost. */
+export const EQUIPMENT_TYPES: EntryType[] = ['gear', 'weapon', 'armor', 'vehicle']
+
+export function isEquipment(type: EntryType): boolean {
+  return EQUIPMENT_TYPES.includes(type)
+}
+
 export type Rank = 'novice' | 'seasoned' | 'veteran' | 'heroic' | 'legendary'
 
 export const RANKS: Rank[] = ['novice', 'seasoned', 'veteran', 'heroic', 'legendary']

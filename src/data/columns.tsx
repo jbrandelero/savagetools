@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { EntryType, SourcedEntry } from '@/types/entry'
 import type { Dict } from '@/i18n'
-import { resolveText } from '@/lib/localized'
+import { entryField as field, resolveText } from '@/lib/localized'
 import { categoryLabel } from '@/i18n/categories'
 
 export interface Column {
@@ -14,14 +14,6 @@ export interface Column {
   value: (e: SourcedEntry, lang: string) => string
   /** Optional rich cell; falls back to value(). */
   render?: (e: SourcedEntry, lang: string, t: Dict) => ReactNode
-}
-
-function field(e: SourcedEntry, name: string, lang: string): string {
-  const v = e.fields?.[name]
-  if (v == null) return ''
-  if (Array.isArray(v)) return v.join(', ')
-  if (typeof v === 'object') return resolveText(v as Record<string, string>, lang)
-  return String(v)
 }
 
 const nameCol: Column = {
@@ -43,6 +35,24 @@ const categoryCol: Column = {
   label: (t) => t.entry.category,
   width: '9rem',
   value: (e, lang) => categoryLabel(e.category, lang),
+}
+
+// Every equipment list (gear, weapons, armor, vehicles) shows the same cost
+// column, so it lives here instead of being repeated per type.
+const costCol: Column = {
+  key: 'cost',
+  label: (t) => t.fields.cost,
+  width: '6rem',
+  align: 'right',
+  value: (e, lang) => field(e, 'cost', lang),
+}
+
+const weightCol: Column = {
+  key: 'weight',
+  label: (t) => t.fields.weight,
+  width: '6rem',
+  align: 'right',
+  value: (e, lang) => field(e, 'weight', lang),
 }
 
 // Rules have long category names ("Regras de Ciberequipamento"), so give them
@@ -72,24 +82,24 @@ const MIDDLE: Record<EntryType, Column[]> = {
   skill: [
     { key: 'attribute', label: (t) => t.fields.attribute, width: '8rem', value: (e, lang) => field(e, 'attribute', lang) },
   ],
-  gear: [
-    { key: 'cost', label: (t) => t.fields.cost, width: '6rem', align: 'right', value: (e, lang) => field(e, 'cost', lang) },
-    { key: 'weight', label: (t) => t.fields.weight, width: '6rem', align: 'right', value: (e, lang) => field(e, 'weight', lang) },
-  ],
+  gear: [costCol, weightCol],
   weapon: [
     { key: 'damage', label: (t) => t.fields.damage, width: '7rem', value: (e, lang) => field(e, 'damage', lang) },
     { key: 'range', label: (t) => t.fields.range, width: '7rem', value: (e, lang) => field(e, 'range', lang) },
     { key: 'rof', label: (t) => t.fields.rof, width: '4rem', align: 'right', value: (e, lang) => field(e, 'rof', lang) },
     { key: 'minStr', label: (t) => t.fields.minStr, width: '6rem', align: 'right', value: (e, lang) => field(e, 'minStr', lang) },
+    costCol,
   ],
   armor: [
     { key: 'armor', label: (t) => t.fields.armor, width: '6rem', align: 'right', value: (e, lang) => field(e, 'armor', lang) },
     { key: 'minStr', label: (t) => t.fields.minStr, width: '6rem', align: 'right', value: (e, lang) => field(e, 'minStr', lang) },
-    { key: 'weight', label: (t) => t.fields.weight, width: '6rem', align: 'right', value: (e, lang) => field(e, 'weight', lang) },
+    costCol,
+    weightCol,
   ],
   vehicle: [
     { key: 'topSpeed', label: (t) => t.fields.topSpeed, width: '7rem', value: (e, lang) => field(e, 'topSpeed', lang) },
     { key: 'toughness', label: (t) => t.fields.toughness, width: '7rem', value: (e, lang) => field(e, 'toughness', lang) },
+    costCol,
   ],
   ancestry: [categoryCol],
   rule: [categoryColWide],

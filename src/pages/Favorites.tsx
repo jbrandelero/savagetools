@@ -2,13 +2,18 @@ import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useLibrary, type PowerBuild } from '@/store/useLibrary'
 import { useResolvedEntries, useContentLang, useT } from '@/hooks'
-import { resolveText } from '@/lib/localized'
+import { entryField, resolveText } from '@/lib/localized'
 import { sourceBadgeStyle } from '@/lib/sources'
 import { categoryLabel } from '@/i18n/categories'
 import { FavoriteStar } from '@/components/FavoriteStar'
 import { EntryView } from '@/components/EntryView'
 import { PowerBuilderPanel } from '@/components/PowerBuilderPanel'
-import { ENTRY_TYPES, type EntryType, type SourcedEntry } from '@/types/entry'
+import {
+  ENTRY_TYPES,
+  isEquipment,
+  type EntryType,
+  type SourcedEntry,
+} from '@/types/entry'
 
 export function Favorites() {
   const { t } = useT()
@@ -132,60 +137,76 @@ export function Favorites() {
                         resolveText(b.name, lang),
                       ),
                     )
-                    .map((e) => (
-                      <li key={e.key}>
-                        <button
-                          onClick={() => selectEntry(e.key)}
-                          className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-black/5 dark:hover:bg-white/5 ${
-                            e.key === selectedKey && !buildId
-                              ? 'border-l-2 border-blood bg-blood/10'
-                              : ''
-                          }`}
-                        >
-                          <span className="font-medium">
-                            {resolveText(e.name, lang)}
-                          </span>
-                          {e.category && (
-                            <span className="opacity-50">
-                              · {categoryLabel(e.category, lang)}
-                            </span>
-                          )}
-                          <span
-                            style={sourceBadgeStyle(e.sourceAbbrev)}
-                            className="ml-auto rounded px-1.5 py-0.5 text-[11px] font-medium"
-                          >
-                            {e.sourceAbbrev}
-                          </span>
-                        </button>
-                        {/* Saved combos as sub-items of the power. */}
-                        {(buildsByPower.get(e.key) ?? []).map((b) => (
-                          <div
-                            key={b.id}
-                            className={`flex items-center gap-2 py-1 pl-8 pr-3 text-xs ${
-                              b.id === buildId
-                                ? 'border-l-2 border-brass bg-brass/10'
+                    .map((e) => {
+                      // Equipment always carries its price in the list.
+                      const cost = isEquipment(e.type)
+                        ? entryField(e, 'cost', lang)
+                        : ''
+                      return (
+                        <li key={e.key}>
+                          <button
+                            onClick={() => selectEntry(e.key)}
+                            className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-black/5 dark:hover:bg-white/5 ${
+                              e.key === selectedKey && !buildId
+                                ? 'border-l-2 border-blood bg-blood/10'
                                 : ''
                             }`}
                           >
-                            <button
-                              onClick={() => selectBuild(b)}
-                              className="flex-1 truncate text-left hover:underline"
-                              title={modLabel(b)}
+                            <span className="font-medium">
+                              {resolveText(e.name, lang)}
+                            </span>
+                            {e.category && (
+                              <span className="opacity-50">
+                                · {categoryLabel(e.category, lang)}
+                              </span>
+                            )}
+                            {cost && (
+                              <span
+                                title={t.fields.cost}
+                                className="ml-auto shrink-0 tabular-nums opacity-70"
+                              >
+                                {cost}
+                              </span>
+                            )}
+                            <span
+                              style={sourceBadgeStyle(e.sourceAbbrev)}
+                              className={`shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                                cost ? '' : 'ml-auto'
+                              }`}
                             >
-                              <span className="text-brass">⚒</span>{' '}
-                              {modLabel(b) || '—'}
-                            </button>
-                            <button
-                              onClick={() => removeBuild(b.id)}
-                              className="opacity-40 hover:text-red-500 hover:opacity-100"
-                              title="✕"
+                              {e.sourceAbbrev}
+                            </span>
+                          </button>
+                          {/* Saved combos as sub-items of the power. */}
+                          {(buildsByPower.get(e.key) ?? []).map((b) => (
+                            <div
+                              key={b.id}
+                              className={`flex items-center gap-2 py-1 pl-8 pr-3 text-xs ${
+                                b.id === buildId
+                                  ? 'border-l-2 border-brass bg-brass/10'
+                                  : ''
+                              }`}
                             >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </li>
-                    ))}
+                              <button
+                                onClick={() => selectBuild(b)}
+                                className="flex-1 truncate text-left hover:underline"
+                                title={modLabel(b)}
+                              >
+                                <span className="text-brass">⚒</span>{' '}
+                                {modLabel(b) || '—'}
+                              </button>
+                              <button
+                                onClick={() => removeBuild(b.id)}
+                                className="opacity-40 hover:text-red-500 hover:opacity-100"
+                                title="✕"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </li>
+                      )
+                    })}
                 </ul>
               </div>
             )
