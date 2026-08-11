@@ -6,6 +6,7 @@ import { langShort } from '@/i18n'
 import { resolveText } from '@/lib/localized'
 import { canonicalKey } from '@/lib/slug'
 import { fileToEntryImage } from '@/lib/image'
+import { Modal } from './Modal'
 import {
   ENTRY_TYPES,
   RANKS,
@@ -95,9 +96,9 @@ export function EntryEditor({
 
   if (editableBooks.length === 0) {
     return (
-      <Shell onClose={onClose} title={t.editor.newItem}>
+      <Modal onClose={onClose} title={t.editor.newItem}>
         <p className="opacity-70">{t.editor.noBook}</p>
-      </Shell>
+      </Modal>
     )
   }
 
@@ -156,7 +157,7 @@ export function EntryEditor({
   const langs = bookLangs(bookId)
 
   return (
-    <Shell onClose={onClose} title={initial ? t.editor.editItem : t.editor.newItem}>
+    <Modal onClose={onClose} title={initial ? t.editor.editItem : t.editor.newItem}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {/* Book + type + language */}
         <Field label={t.editor.targetBook}>
@@ -341,7 +342,7 @@ export function EntryEditor({
           {t.editor.save}
         </button>
       </div>
-    </Shell>
+    </Modal>
   )
 }
 
@@ -362,25 +363,3 @@ function fieldLabel(k: string, t: ReturnType<typeof useT>['t']): string {
   return f[k] ?? k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase())
 }
 
-function Shell({
-  title,
-  onClose,
-  children,
-}: {
-  title: string
-  onClose: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <div className="fixed inset-0 z-[90] flex items-start justify-center overflow-auto p-4" role="dialog">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative z-10 mt-10 w-full max-w-2xl rounded border border-black/10 bg-parchment p-4 shadow-xl dark:border-white/10 dark:bg-[#15120f]">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold text-blood">{title}</h2>
-          <button onClick={onClose} className="opacity-60 hover:opacity-100">✕</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  )
-}

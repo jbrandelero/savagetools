@@ -20,7 +20,10 @@
       },
       "description": {
         "pt-BR": "Resistência ao Calor: +2 contra calor e fogo.\\nSopro de Brasa: uma vez por combate, 2d4 em Cone.\\nFrágil ao Frio: -2 contra efeitos de frio."
-      }
+      },
+      "tags": [
+        "cinzas"
+      ]
     },
     {
       "type": "ancestry",
@@ -33,7 +36,10 @@
       },
       "description": {
         "pt-BR": "Corpo Cristalino: Armadura +1.\\nReflexo Prismático: +1 para se esconder sob luz forte.\\nEstilhaço: ao ser Incapacitado, causa 2d4 em quem estiver adjacente."
-      }
+      },
+      "tags": [
+        "vidro"
+      ]
     },
     {
       "type": "edge",
@@ -51,7 +57,11 @@
       },
       "description": {
         "pt-BR": "Ganha uma rerrolagem em testes para resistir a fogo e calor."
-      }
+      },
+      "tags": [
+        "cinzas",
+        "fogo"
+      ]
     },
     {
       "type": "edge",
@@ -69,7 +79,10 @@
       },
       "description": {
         "pt-BR": "Enquanto adjacente a um aliado, ambos recebem +1 de Aparar."
-      }
+      },
+      "tags": [
+        "defesa"
+      ]
     },
     {
       "type": "edge",
@@ -87,7 +100,10 @@
       },
       "description": {
         "pt-BR": "Recebe +2 em Persuadir ao interagir com alguém pela primeira vez."
-      }
+      },
+      "tags": [
+        "social"
+      ]
     },
     {
       "type": "hindrance",
@@ -98,7 +114,10 @@
       "category": "minor",
       "description": {
         "pt-BR": "Não consegue abandonar itens; -1 em testes para deixar um tesouro para trás."
-      }
+      },
+      "tags": [
+        "social"
+      ]
     },
     {
       "type": "hindrance",
@@ -109,7 +128,10 @@
       "category": "major",
       "description": {
         "pt-BR": "Deve cumprir um juramento pessoal, mesmo em risco de vida."
-      }
+      },
+      "tags": [
+        "social"
+      ]
     },
     {
       "type": "hindrance",
@@ -120,7 +142,10 @@
       "category": "minor/major",
       "description": {
         "pt-BR": "Menor: distrações ocasionais. Maior: -1 em Perceber por ouvir vozes."
-      }
+      },
+      "tags": [
+        "mental"
+      ]
     },
     {
       "type": "skill",
@@ -136,7 +161,11 @@
           "pt-BR": "Esperteza",
           "en": "Smarts"
         }
-      }
+      },
+      "tags": [
+        "vidro",
+        "ofício"
+      ]
     },
     {
       "type": "skill",
@@ -152,7 +181,11 @@
           "pt-BR": "Espírito",
           "en": "Spirit"
         }
-      }
+      },
+      "tags": [
+        "cinzas",
+        "fogo"
+      ]
     },
     {
       "type": "power",
@@ -175,7 +208,11 @@
         "duration": {
           "pt-BR": "5"
         }
-      }
+      },
+      "tags": [
+        "cinzas",
+        "defesa"
+      ]
     },
     {
       "type": "power",
@@ -198,7 +235,11 @@
         "duration": {
           "pt-BR": "Instantâneo"
         }
-      }
+      },
+      "tags": [
+        "vidro",
+        "movimento"
+      ]
     },
     {
       "type": "weapon",
@@ -212,7 +253,11 @@
         "minStr": "d8",
         "weight": "4",
         "cost": "350"
-      }
+      },
+      "tags": [
+        "vidro",
+        "corpo a corpo"
+      ]
     },
     {
       "type": "weapon",
@@ -228,7 +273,10 @@
         "minStr": "d6",
         "weight": "3",
         "cost": "400"
-      }
+      },
+      "tags": [
+        "ataque à distância"
+      ]
     },
     {
       "type": "weapon",
@@ -245,7 +293,11 @@
         "minStr": "d4",
         "weight": "2",
         "cost": "250"
-      }
+      },
+      "tags": [
+        "pólvora",
+        "ataque à distância"
+      ]
     },
     {
       "type": "armor",
@@ -259,7 +311,11 @@
         "minStr": "d8",
         "weight": "18",
         "cost": "500"
-      }
+      },
+      "tags": [
+        "vidro",
+        "defesa"
+      ]
     },
     {
       "type": "armor",
@@ -273,7 +329,10 @@
         "minStr": "d6",
         "weight": "6",
         "cost": "600"
-      }
+      },
+      "tags": [
+        "defesa"
+      ]
     },
     {
       "type": "gear",
@@ -291,7 +350,11 @@
       "fields": {
         "cost": "50",
         "weight": "1"
-      }
+      },
+      "tags": [
+        "fogo",
+        "exploração"
+      ]
     },
     {
       "type": "gear",
@@ -309,7 +372,11 @@
       "fields": {
         "cost": "300",
         "weight": "0,5"
-      }
+      },
+      "tags": [
+        "vidro",
+        "mágico"
+      ]
     },
     {
       "type": "gear",
@@ -323,7 +390,10 @@
         "toughness": "12 (3)",
         "crew": "1+5",
         "cost": "2000"
-      }
+      },
+      "tags": [
+        "veículo"
+      ]
     },
     {
       "type": "gear",
@@ -337,7 +407,11 @@
         "toughness": "9 (2)",
         "crew": "1",
         "cost": "5000"
-      }
+      },
+      "tags": [
+        "veículo",
+        "cinzas"
+      ]
     },
     {
       "type": "rule",
@@ -348,7 +422,10 @@
       "category": "core",
       "description": {
         "pt-BR": "Ao acumular fadiga, role Vigor no fim da cena; sucesso remove 1 nível de Fadiga."
-      }
+      },
+      "tags": [
+        "exploração"
+      ]
     },
     {
       "type": "rule",
@@ -359,7 +436,11 @@
       "category": "combat",
       "description": {
         "pt-BR": "Ao correr e atacar, adicione +2 de dano mas fique Vulnerável até seu próximo turno."
-      }
+      },
+      "tags": [
+        "fogo",
+        "combate"
+      ]
     },
     {
       "type": "rule",
@@ -370,7 +451,10 @@
       "category": "tools",
       "description": {
         "pt-BR": "Vários personagens somam sucessos em uma Tarefa Dramática de criação de item."
-      }
+      },
+      "tags": [
+        "ofício"
+      ]
     },
     {
       "type": "rule",
@@ -381,7 +465,10 @@
       "description": {
         "pt-BR": "Heróis começam com 1 Bene extra que só pode ser gasto em testes de Espírito."
       },
-      "category": "setting"
+      "category": "setting",
+      "tags": [
+        "heroísmo"
+      ]
     },
     {
       "type": "rule",
@@ -392,7 +479,10 @@
       "description": {
         "pt-BR": "Falhas Críticas também quebram um item de equipamento à escolha do Mestre."
       },
-      "category": "setting"
+      "category": "setting",
+      "tags": [
+        "exploração"
+      ]
     },
     {
       "type": "bestiary",
@@ -420,7 +510,11 @@
         "specialAbilities": {
           "pt-BR": "Blindado: Armadura +3.\\nCorpo Ardente: quem o atacar corpo a corpo sofre 1d6 de dano.\\nConstruto: +2 para se recuperar de Abalado; imune a veneno e doença.\\nFraqueza (Água): sofre +4 de dano de ataques de água."
         }
-      }
+      },
+      "tags": [
+        "cinzas",
+        "construto"
+      ]
     },
     {
       "type": "bestiary",
@@ -448,7 +542,11 @@
         "specialAbilities": {
           "pt-BR": "Camuflagem: +2 para se esconder à luz do dia.\\nGarras: For+d6.\\nSaltador: ignora terreno difícil ao investir."
         }
-      }
+      },
+      "tags": [
+        "vidro",
+        "predador"
+      ]
     }
   ],
   "cover": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTYwIiB2aWV3Qm94PSIwIDAgNDAwIDU2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iaHNsKDI4IDQwJSAzMCUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woOCA0NSUgMTYlKSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjU2MCIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzNjgiIGhlaWdodD0iNTI4IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yNSkiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyMDAiIHk9Ijk1IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuODUpIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI3MiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVYPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjMwMCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMzYiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MaXZybzwvdGV4dD4KPHRleHQgeD0iMjAwIiB5PSIzNDUiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjM2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RXhlbXBsbzwvdGV4dD4KPC9zdmc+"

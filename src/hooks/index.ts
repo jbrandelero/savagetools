@@ -3,7 +3,8 @@ import { getDict } from '@/i18n'
 import { groupByKey, resolveGroups } from '@/lib/dedupe'
 import { useLibrary, selectActiveEntries, visibleBookIds } from '@/store/useLibrary'
 import { resolveText } from '@/lib/localized'
-import type { EntryGroup, SourcedEntry } from '@/types/entry'
+import { categoryLabel } from '@/i18n/categories'
+import type { EntryGroup, EntryType, SourcedEntry } from '@/types/entry'
 
 /** UI dictionary + current UI language. */
 export function useT() {
@@ -61,6 +62,33 @@ export function useResolvedEntries(): SourcedEntry[] {
   const groups = useGroups()
   const prefs = useLibrary((s) => s.variationPrefs)
   return useMemo(() => resolveGroups(groups, prefs), [groups, prefs])
+}
+
+/**
+ * Categories actually present in the active books, per entry type, sorted by
+ * their localized label. Drives the nav submenus, so an empty type simply gets
+ * no submenu instead of a dead one.
+ */
+export function useCategoriesByType(): Map<EntryType, string[]> {
+  const entries = useResolvedEntries()
+  const lang = useContentLang()
+  return useMemo(() => {
+    const out = new Map<EntryType, Set<string>>()
+    for (const e of entries) {
+      if (!e.category) continue
+      const set = out.get(e.type) ?? new Set<string>()
+      set.add(e.category)
+      out.set(e.type, set)
+    }
+    return new Map(
+      [...out].map(([type, set]) => [
+        type,
+        [...set].sort((a, b) =>
+          categoryLabel(a, lang).localeCompare(categoryLabel(b, lang)),
+        ),
+      ]),
+    )
+  }, [entries, lang])
 }
 
 export interface NameIndex {

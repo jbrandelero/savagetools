@@ -87,12 +87,13 @@ export function Browse() {
   return (
     <div className="flex h-full flex-col">
       <div className="mb-3 flex flex-wrap items-center gap-3">
+        {/* "Gear · Magic Item" — the category is a qualifier, not a plural of
+            its own, so it never gets pluralized. */}
         <h1 className="font-display text-lg font-bold sm:text-xl">
-          {cat
-            ? categoryLabel(cat, lang) + 's'
-            : activeType
-              ? t.types[activeType]
-              : t.browse.all}
+          {activeType ? t.types[activeType] : t.browse.all}
+          {cat && (
+            <span className="opacity-70"> · {categoryLabel(cat, lang)}</span>
+          )}
         </h1>
         <span className="text-sm opacity-60">{rows.length}</span>
         <button

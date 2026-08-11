@@ -11,14 +11,15 @@ export interface FilterState {
   source: FacetState
   rank: FacetState
   category: FacetState
+  tags: FacetState
   text: string
 }
 
-export const FACET_KEYS = ['source', 'rank', 'category'] as const
+export const FACET_KEYS = ['source', 'rank', 'category', 'tags'] as const
 export type FacetKey = (typeof FACET_KEYS)[number]
 
 export function emptyFilter(): FilterState {
-  return { source: {}, rank: {}, category: {}, text: '' }
+  return { source: {}, rank: {}, category: {}, tags: {}, text: '' }
 }
 
 /** ignore -> require -> exclude -> ignore */
@@ -33,10 +34,15 @@ export function isFilterActive(f: FilterState): boolean {
   return FACET_KEYS.some((k) => Object.values(f[k]).some((m) => m !== 0))
 }
 
-function facetValue(e: SourcedEntry, key: FacetKey): string | undefined {
-  if (key === 'source') return e.sourceAbbrev
-  if (key === 'rank') return e.rank
-  return e.category
+/**
+ * The values an entry carries for a facet. Most facets hold at most one value;
+ * `tags` holds several, so every facet is expressed as a list.
+ */
+function facetValues(e: SourcedEntry, key: FacetKey): string[] {
+  if (key === 'source') return [e.sourceAbbrev]
+  if (key === 'rank') return e.rank ? [e.rank] : []
+  if (key === 'tags') return e.tags ?? []
+  return e.category ? [e.category] : []
 }
 
 /**
@@ -45,11 +51,11 @@ function facetValue(e: SourcedEntry, key: FacetKey): string | undefined {
  *  - AND the entry does not match any excluded value.
  */
 function facetPasses(e: SourcedEntry, facet: FacetState, key: FacetKey): boolean {
-  const v = facetValue(e, key)
+  const values = facetValues(e, key)
   const required = Object.entries(facet).filter(([, m]) => m === 1).map(([k]) => k)
   const excluded = Object.entries(facet).filter(([, m]) => m === -1).map(([k]) => k)
-  if (v && excluded.includes(v)) return false
-  if (required.length > 0 && !(v && required.includes(v))) return false
+  if (values.some((v) => excluded.includes(v))) return false
+  if (required.length > 0 && !values.some((v) => required.includes(v))) return false
   return true
 }
 
@@ -60,9 +66,7 @@ export function applyFilters(
 ): SourcedEntry[] {
   const text = f.text.trim().toLowerCase()
   return entries.filter((e) => {
-    if (!facetPasses(e, f.source, 'source')) return false
-    if (!facetPasses(e, f.rank, 'rank')) return false
-    if (!facetPasses(e, f.category, 'category')) return false
+    if (!FACET_KEYS.every((k) => facetPasses(e, f[k], k))) return false
     if (text) {
       const hay = resolveText(e.name, lang).toLowerCase()
       if (!hay.includes(text)) return false
@@ -71,17 +75,20 @@ export function applyFilters(
   })
 }
 
-/** Distinct facet values present in the given entry set, in first-seen order. */
+/**
+ * Distinct facet values present in the given entry set. Sources/ranks/categories
+ * keep first-seen order; tags are alphabetical, since a book can define dozens
+ * of them and load order carries no meaning for a reader scanning the pills.
+ */
 export function facetOptions(
   entries: SourcedEntry[],
   key: FacetKey,
 ): string[] {
   const seen: string[] = []
   for (const e of entries) {
-    const v = facetValue(e, key)
-    if (v && !seen.includes(v)) seen.push(v)
+    for (const v of facetValues(e, key)) if (!seen.includes(v)) seen.push(v)
   }
-  return seen
+  return key === 'tags' ? seen.sort((a, b) => a.localeCompare(b)) : seen
 }
 
 /**
@@ -98,8 +105,7 @@ export function availableFacetValues(
   const out = new Set<string>()
   for (const e of entries) {
     if (!others.every((k) => facetPasses(e, f[k], k))) continue
-    const v = facetValue(e, key)
-    if (v) out.add(v)
+    for (const v of facetValues(e, key)) out.add(v)
   }
   return out
 }

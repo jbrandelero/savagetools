@@ -29,7 +29,7 @@ export function visibleBookIds(ids: string[]): string[] {
 
 // Bump whenever the bundled books in public/data change, so already-seeded
 // browsers refresh their seed-origin books (user-uploaded books are untouched).
-const SEED_VERSION = 7
+const SEED_VERSION = 8
 
 // Bump when the disclaimer text changes so a dismissed disclaimer reappears.
 export const DISCLAIMER_VERSION = 1

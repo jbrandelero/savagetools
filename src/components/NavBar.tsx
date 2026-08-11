@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import type { EntryType } from '@/types/entry'
 import { Omnisearch } from './Omnisearch'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageMenu } from './LanguageSwitcher'
 import { SpannerIcon } from './SpannerIcon'
-import { useT } from '@/hooks'
+import { useCategoriesByType, useContentLang, useT } from '@/hooks'
 import { usePwaInstall } from '@/hooks/usePwaInstall'
+import { categoryLabel } from '@/i18n/categories'
 import type { Dict } from '@/i18n'
 
 interface NavGroup {
@@ -37,6 +38,124 @@ function NavDivider() {
   return <span aria-hidden className="mx-1.5 h-4 w-px shrink-0 bg-white/15" />
 }
 
+/** Powers list their modifiers through a dedicated menu entry, not as a category. */
+function menuCategories(type: EntryType, cats: string[]): string[] {
+  return type === 'power' ? cats.filter((c) => c !== 'modifier') : cats
+}
+
+/** Are we currently browsing exactly this type + category? */
+function useIsBrowsing(): (type: EntryType, cat?: string) => boolean {
+  const { pathname, search } = useLocation()
+  return (type, cat) =>
+    pathname === `/browse/${type}` &&
+    (new URLSearchParams(search).get('cat') ?? undefined) === cat
+}
+
+/**
+ * One entry type inside a nav dropdown. The label itself opens the unfiltered
+ * list; when the active books define categories for the type, a flyout lists
+ * them and each one opens the list already filtered.
+ */
+function TypeItem({
+  type,
+  categories,
+  onNavigate,
+}: {
+  type: EntryType
+  categories: string[]
+  onNavigate: () => void
+}) {
+  const { t } = useT()
+  const lang = useContentLang()
+  const isBrowsing = useIsBrowsing()
+  const [open, setOpen] = useState(false)
+  const hasSub = categories.length > 0
+  const itemCls = (active: boolean) =>
+    `block px-3 py-1.5 text-sm ${active ? 'text-brass' : 'text-parchment hover:bg-white/10'}`
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <div className="flex items-center">
+        <NavLink
+          to={`/browse/${type}`}
+          onClick={onNavigate}
+          className={`flex-1 ${itemCls(isBrowsing(type))}`}
+        >
+          {t.types[type]}
+        </NavLink>
+        {hasSub && (
+          <button
+            onClick={() => setOpen((o) => !o)}
+            aria-label={t.types[type]}
+            aria-expanded={open}
+            className="px-2 py-1.5 text-xs text-parchment/60 hover:text-brass"
+          >
+            ▸
+          </button>
+        )}
+      </div>
+      {hasSub && open && (
+        <div className="absolute left-full top-0 z-50 max-h-[70vh] min-w-[12rem] overflow-auto rounded border border-white/10 bg-ink py-1 shadow-lg">
+          {categories.map((cat) => (
+            <NavLink
+              key={cat}
+              to={`/browse/${type}?cat=${encodeURIComponent(cat)}`}
+              onClick={onNavigate}
+              className={itemCls(isBrowsing(type, cat))}
+            >
+              {categoryLabel(cat, lang)}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** "All of <type>" plus one row per category, for a single-type dropdown. */
+function SoleTypeItems({
+  type,
+  categories,
+  onNavigate,
+}: {
+  type: EntryType
+  categories: string[]
+  onNavigate: () => void
+}) {
+  const { t } = useT()
+  const lang = useContentLang()
+  const isBrowsing = useIsBrowsing()
+  const itemCls = (active: boolean) =>
+    `block px-3 py-1.5 text-sm ${active ? 'text-brass' : 'text-parchment hover:bg-white/10'}`
+  return (
+    <>
+      <NavLink
+        to={`/browse/${type}`}
+        onClick={onNavigate}
+        className={itemCls(isBrowsing(type))}
+      >
+        {t.types[type]}
+      </NavLink>
+      {categories.map((cat, i) => (
+        <NavLink
+          key={cat}
+          to={`/browse/${type}?cat=${encodeURIComponent(cat)}`}
+          onClick={onNavigate}
+          className={`${itemCls(isBrowsing(type, cat))} ${
+            i === 0 ? 'border-t border-white/10' : ''
+          }`}
+        >
+          {categoryLabel(cat, lang)}
+        </NavLink>
+      ))}
+    </>
+  )
+}
+
 function Dropdown({
   label,
   types,
@@ -46,7 +165,7 @@ function Dropdown({
   types: EntryType[]
   extra?: { to: string; label: string }[]
 }) {
-  const { t } = useT()
+  const catsByType = useCategoriesByType()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -77,20 +196,24 @@ function Dropdown({
       </button>
       {open && (
         <div className="absolute left-0 top-full z-40 min-w-[11rem] rounded border border-white/10 bg-ink py-1 shadow-lg">
-          {types.map((type) => (
-            <NavLink
-              key={type}
-              to={`/browse/${type}`}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block px-3 py-1.5 text-sm ${
-                  isActive ? 'text-brass' : 'text-parchment hover:bg-white/10'
-                }`
-              }
-            >
-              {t.types[type]}
-            </NavLink>
-          ))}
+          {/* A group covering one type puts its categories straight in the
+              panel — a flyout off a single row would be a pointless hop. */}
+          {types.length === 1 ? (
+            <SoleTypeItems
+              type={types[0]}
+              categories={menuCategories(types[0], catsByType.get(types[0]) ?? [])}
+              onNavigate={() => setOpen(false)}
+            />
+          ) : (
+            types.map((type) => (
+              <TypeItem
+                key={type}
+                type={type}
+                categories={menuCategories(type, catsByType.get(type) ?? [])}
+                onNavigate={() => setOpen(false)}
+              />
+            ))
+          )}
           {extra?.map((x) => (
             <NavLink
               key={x.to}
@@ -113,6 +236,8 @@ function Dropdown({
 
 export function NavBar() {
   const { t } = useT()
+  const lang = useContentLang()
+  const catsByType = useCategoriesByType()
   const { canInstall, install } = usePwaInstall()
   const [menu, setMenu] = useState(false)
 
@@ -134,8 +259,12 @@ export function NavBar() {
         <nav className="hidden items-center md:flex">
           {GROUPS.map((g) => {
             const extra = g.extra?.map((x) => ({ to: x.to, label: x.label(t) }))
-            // Single-type group with no extra link -> a plain link, not a dropdown.
-            if (g.types.length === 1 && !extra?.length) {
+            const soleCats =
+              g.types.length === 1
+                ? menuCategories(g.types[0], catsByType.get(g.types[0]) ?? [])
+                : []
+            // Single type, no extra link and no categories -> a plain link.
+            if (g.types.length === 1 && !extra?.length && soleCats.length === 0) {
               return (
                 <NavLink key={g.label(t)} to={`/browse/${g.types[0]}`} className={topLink}>
                   {g.label(t)}
@@ -201,19 +330,39 @@ export function NavBar() {
           <div className="mb-3 sm:hidden">
             <Omnisearch />
           </div>
-          <nav className="grid grid-cols-2 gap-x-4 gap-y-1">
-            {GROUPS.flatMap((g) => g.types).map((type) => (
-              <NavLink
-                key={type}
-                to={`/browse/${type}`}
-                onClick={() => setMenu(false)}
-                className={({ isActive }) =>
-                  `py-1 text-sm ${isActive ? 'text-brass' : 'hover:text-brass'}`
-                }
-              >
-                {t.types[type]}
-              </NavLink>
-            ))}
+          {/* One row per type; its categories sit right below as chips that
+              open the list already filtered. */}
+          <nav className="space-y-1">
+            {GROUPS.flatMap((g) => g.types).map((type) => {
+              const cats = menuCategories(type, catsByType.get(type) ?? [])
+              return (
+                <div key={type}>
+                  <NavLink
+                    to={`/browse/${type}`}
+                    onClick={() => setMenu(false)}
+                    className={({ isActive }) =>
+                      `block py-1 text-sm ${isActive ? 'text-brass' : 'hover:text-brass'}`
+                    }
+                  >
+                    {t.types[type]}
+                  </NavLink>
+                  {cats.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pb-1 pl-3">
+                      {cats.map((cat) => (
+                        <NavLink
+                          key={cat}
+                          to={`/browse/${type}?cat=${encodeURIComponent(cat)}`}
+                          onClick={() => setMenu(false)}
+                          className="rounded bg-white/10 px-1.5 py-0.5 text-[11px] hover:bg-white/20 hover:text-brass"
+                        >
+                          {categoryLabel(cat, lang)}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
             <NavLink
               to="/browse/power?cat=modifier"
               onClick={() => setMenu(false)}

@@ -7,6 +7,7 @@ import { Disclaimer } from '@/components/Disclaimer'
 import { langBadge } from '@/i18n'
 import { downloadText } from '@/lib/download'
 import { MAX_IMAGE_BYTES, readAsDataUrl } from '@/lib/image'
+import { Modal } from '@/components/Modal'
 
 /** Editable book metadata — the shape the create/edit form works with. */
 interface BookMetaDraft {
@@ -25,15 +26,18 @@ const fieldCls =
 
 /**
  * Title / abbrev / languages / category / cover form, shared by "new book" and
- * by editing a book already in the library.
+ * by editing a book already in the library. Always opens as a dialog: book
+ * metadata is a whole form, not a one-line tweak.
  */
 function BookForm({
   initial,
+  modalTitle,
   submitLabel,
   onSubmit,
   onCancel,
 }: {
   initial?: BookMetaDraft
+  modalTitle: string
   submitLabel: string
   onSubmit: (draft: BookMetaDraft) => void
   onCancel: () => void
@@ -71,68 +75,75 @@ function BookForm({
   }
 
   return (
-    <div className="rounded border border-brass/40 bg-brass/5 p-3">
-      <div className="flex flex-wrap items-end gap-2">
-        <label className="text-xs">
-          <span className="mb-0.5 block opacity-60">{t.books.fTitle}</span>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className={`w-52 ${fieldCls}`}
-          />
-        </label>
-        <label className="text-xs">
-          <span className="mb-0.5 block opacity-60">{t.books.fAbbrev}</span>
-          <input
-            value={abbrev}
-            onChange={(e) => setAbbrev(e.target.value)}
-            className={`w-20 ${fieldCls}`}
-          />
-        </label>
-        <label className="text-xs">
-          <span className="mb-0.5 block opacity-60">{t.books.fCategory}</span>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className={fieldCls}
-          >
-            {BOOK_CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {(t.books.cats as Record<string, string>)[c] ?? c}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="text-xs">
-          <span className="mb-0.5 block opacity-60">{t.books.fLangs}</span>
-          <div className="flex gap-1">
-            {['pt-BR', 'en'].map((code) => (
-              <button
-                key={code}
-                onClick={() =>
-                  setLangs((s) =>
-                    s.includes(code) ? s.filter((x) => x !== code) : [...s, code],
-                  )
-                }
-                className={`rounded px-2 py-1 transition-colors ${
-                  langs.includes(code)
-                    ? 'bg-blood text-white'
-                    : 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20'
-                }`}
-              >
-                {langBadge([code])}
-              </button>
-            ))}
+    <Modal title={modalTitle} onClose={onCancel} wide>
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_8rem]">
+          <label className="block text-xs">
+            <span className="mb-0.5 block opacity-60">{t.books.fTitle}</span>
+            <input
+              autoFocus
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className={`w-full ${fieldCls}`}
+            />
+          </label>
+          <label className="block text-xs">
+            <span className="mb-0.5 block opacity-60">{t.books.fAbbrev}</span>
+            <input
+              value={abbrev}
+              onChange={(e) => setAbbrev(e.target.value)}
+              className={`w-full ${fieldCls}`}
+            />
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="block text-xs">
+            <span className="mb-0.5 block opacity-60">{t.books.fCategory}</span>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={`w-full ${fieldCls}`}
+            >
+              {BOOK_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {(t.books.cats as Record<string, string>)[c] ?? c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="text-xs">
+            <span className="mb-0.5 block opacity-60">{t.books.fLangs}</span>
+            <div className="flex gap-1">
+              {['pt-BR', 'en'].map((code) => (
+                <button
+                  key={code}
+                  onClick={() =>
+                    setLangs((s) =>
+                      s.includes(code) ? s.filter((x) => x !== code) : [...s, code],
+                    )
+                  }
+                  className={`rounded px-2 py-1 transition-colors ${
+                    langs.includes(code)
+                      ? 'bg-blood text-white'
+                      : 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20'
+                  }`}
+                >
+                  {langBadge([code])}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+
         <div className="text-xs">
           <span className="mb-0.5 block opacity-60">{t.books.fCover}</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {cover && (
               <img
                 src={cover}
                 alt=""
-                className="h-14 w-auto rounded border border-black/10 dark:border-white/10"
+                className="h-28 w-auto rounded border border-black/10 shadow-sm dark:border-white/10"
               />
             )}
             <input
@@ -142,23 +153,28 @@ function BookForm({
               hidden
               onChange={(e) => void pickCover(e.target.files)}
             />
-            <button
-              onClick={() => coverRef.current?.click()}
-              className="rounded border border-black/15 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
-            >
-              {t.books.coverPick}
-            </button>
-            {cover && (
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setCover(undefined)}
-                className="opacity-60 hover:text-red-500 hover:opacity-100"
+                onClick={() => coverRef.current?.click()}
+                className="rounded border border-black/15 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
               >
-                {t.books.coverRemove}
+                {t.books.coverPick}
               </button>
-            )}
+              {cover && (
+                <button
+                  onClick={() => setCover(undefined)}
+                  className="opacity-60 hover:text-red-500 hover:opacity-100"
+                >
+                  {t.books.coverRemove}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-        <div className="ml-auto flex items-center gap-2">
+
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+        <div className="flex justify-end gap-2 border-t border-black/10 pt-3 dark:border-white/10">
           <button
             onClick={onCancel}
             className="rounded border border-black/15 px-3 py-1.5 text-sm hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
@@ -174,8 +190,7 @@ function BookForm({
           </button>
         </div>
       </div>
-      {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
-    </div>
+    </Modal>
   )
 }
 
@@ -199,6 +214,7 @@ export function Books() {
   const [copied, setCopied] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const editingBook = editingId ? books[editingId] : undefined
 
   const download = (id: string) =>
     downloadText(`${id}.json`, exportBook(id))
@@ -256,7 +272,7 @@ export function Books() {
             <button
               onClick={() => {
                 setEditingId(null)
-                setShowCreate((v) => !v)
+                setShowCreate(true)
               }}
               className="rounded border border-blood px-3 py-1.5 text-sm text-blood hover:bg-blood/10"
             >
@@ -276,11 +292,34 @@ export function Books() {
 
       {showCreate && (
         <BookForm
+          modalTitle={t.books.newBookTitle}
           submitLabel={t.books.create}
           onCancel={() => setShowCreate(false)}
           onSubmit={(draft) => {
             createBook(draft)
             setShowCreate(false)
+          }}
+        />
+      )}
+
+      {editingBook && (
+        <BookForm
+          // Remount when switching books so the fields reload.
+          key={editingBook.id}
+          initial={{
+            title: editingBook.title,
+            abbrev: editingBook.abbrev,
+            languages: editingBook.languages,
+            category: editingBook.category ?? 'homebrew',
+            cover: editingBook.cover,
+          }}
+          modalTitle={`${t.books.edit} — ${editingBook.title}`}
+          submitLabel={t.books.save}
+          onCancel={() => setEditingId(null)}
+          onSubmit={(draft) => {
+            updateBookMeta(editingBook.id, draft)
+            setEditingId(null)
+            showToast(t.books.savedToast)
           }}
         />
       )}
@@ -332,11 +371,10 @@ export function Books() {
             const userAdded = origins[m.id] === 'user'
             // The bundled example book is read-only, like its entries.
             const editable = m.id !== EXAMPLE_ID
-            const editing = editingId === m.id
             return (
               <li
                 key={m.id}
-                className="space-y-3 rounded border border-black/10 bg-white/50 p-3 dark:border-white/10 dark:bg-white/5"
+                className="rounded border border-black/10 bg-white/50 p-3 dark:border-white/10 dark:bg-white/5"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
@@ -378,14 +416,10 @@ export function Books() {
                       <button
                         onClick={() => {
                           setShowCreate(false)
-                          setEditingId(editing ? null : m.id)
+                          setEditingId(m.id)
                         }}
                         title={t.books.edit}
-                        className={`rounded border px-2 py-1 text-sm transition-colors ${
-                          editing
-                            ? 'border-blood bg-blood/10 text-blood'
-                            : 'border-black/15 opacity-70 hover:opacity-100 dark:border-white/15'
-                        }`}
+                        className="rounded border border-black/15 px-2 py-1 text-sm opacity-70 hover:opacity-100 dark:border-white/15"
                       >
                         ✎
                       </button>
@@ -418,27 +452,6 @@ export function Books() {
                     </button>
                   </div>
                 </div>
-
-                {editing && book && (
-                  <BookForm
-                    // Remount when switching books so the fields reload.
-                    key={m.id}
-                    initial={{
-                      title: book.title,
-                      abbrev: book.abbrev,
-                      languages: book.languages,
-                      category: book.category ?? 'homebrew',
-                      cover: book.cover,
-                    }}
-                    submitLabel={t.books.save}
-                    onCancel={() => setEditingId(null)}
-                    onSubmit={(draft) => {
-                      updateBookMeta(m.id, draft)
-                      setEditingId(null)
-                      showToast(t.books.savedToast)
-                    }}
-                  />
-                )}
               </li>
             )
           })}
