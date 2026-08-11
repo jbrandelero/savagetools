@@ -199,11 +199,16 @@ function Dropdown({
           {/* A group covering one type puts its categories straight in the
               panel — a flyout off a single row would be a pointless hop. */}
           {types.length === 1 ? (
-            <SoleTypeItems
-              type={types[0]}
-              categories={menuCategories(types[0], catsByType.get(types[0]) ?? [])}
-              onNavigate={() => setOpen(false)}
-            />
+            // Scrolls on its own: a book with dozens of rule or bestiary
+            // categories would otherwise run off the bottom of the screen.
+            // Only safe here — a scroll box would clip the flyouts below.
+            <div className="max-h-[70vh] overflow-y-auto">
+              <SoleTypeItems
+                type={types[0]}
+                categories={menuCategories(types[0], catsByType.get(types[0]) ?? [])}
+                onNavigate={() => setOpen(false)}
+              />
+            </div>
           ) : (
             types.map((type) => (
               <TypeItem
@@ -315,7 +320,7 @@ export function NavBar() {
 
       {/* Mobile menu */}
       {menu && (
-        <div className="border-t border-white/10 px-3 py-3 md:hidden">
+        <div className="max-h-[80vh] overflow-y-auto border-t border-white/10 px-3 py-3 md:hidden">
           {canInstall && (
             <button
               onClick={() => {

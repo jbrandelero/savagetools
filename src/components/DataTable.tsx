@@ -23,6 +23,18 @@ export interface DataTableProps {
 /** Sentinel key for the always-appended Source column. */
 const SOURCE_KEY = '__source__'
 
+/**
+ * Source is always the last column and stays pinned to the right edge while the
+ * rest of the table scrolls sideways. It needs an opaque background of its own
+ * so the scrolling cells do not show through — which is why row striping stops
+ * at its left border.
+ */
+const SOURCE_CELL =
+  'sticky right-0 border-l border-black/5 px-2 py-1 text-left dark:border-white/10'
+
+/** Page background, so scrolled cells cannot show through the pinned column. */
+const SOURCE_BODY_BG = 'bg-parchment dark:bg-[#15120f]'
+
 type SortDir = 'asc' | 'desc'
 
 function alignClass(align: Column['align']): string {
@@ -149,7 +161,7 @@ export function DataTable(props: DataTableProps): JSX.Element {
               </td>
             )
           })}
-          <td className="px-2 py-1 text-left">
+          <td className={`${SOURCE_CELL} ${SOURCE_BODY_BG} z-[1]`}>
             <span
               style={sourceBadgeStyle(entry.sourceAbbrev)}
               title={sourceName(entry.sourceAbbrev)}
@@ -176,7 +188,7 @@ export function DataTable(props: DataTableProps): JSX.Element {
                   <span className="ml-1 text-brass">✓</span>
                 )}
               </td>
-              <td className="px-2 py-1 text-left">
+              <td className={`${SOURCE_CELL} ${SOURCE_BODY_BG} z-[1]`}>
                 <span
                   style={sourceBadgeStyle(v.sourceAbbrev)}
                   title={sourceName(v.sourceAbbrev)}
@@ -233,7 +245,7 @@ export function DataTable(props: DataTableProps): JSX.Element {
           <th
             key={SOURCE_KEY}
             onClick={() => toggleSort(SOURCE_KEY)}
-            className="cursor-pointer select-none border-b border-black/10 px-2 py-1 text-left font-medium dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+            className={`${SOURCE_CELL} z-20 cursor-pointer select-none border-b border-black/10 bg-parchment font-medium dark:border-white/10 dark:bg-ink`}
           >
             {t.entry.source}
             {sortIndicator(SOURCE_KEY)}
