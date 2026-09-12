@@ -13,8 +13,8 @@ function MaskIcon({ src, className }: { src: string; className?: string }) {
       aria-hidden
       className={`inline-block bg-current ${className ?? ''}`}
       style={{
-        WebkitMaskImage: `url(${src})`,
-        maskImage: `url(${src})`,
+        WebkitMaskImage: `url("${src}")`,
+        maskImage: `url("${src}")`,
         WebkitMaskSize: 'contain',
         maskSize: 'contain',
         WebkitMaskRepeat: 'no-repeat',
