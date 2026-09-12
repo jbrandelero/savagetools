@@ -71,8 +71,16 @@ export interface EncounterItem {
   note?: string
   /** Wounds taken, one entry per copy in play (index = copy number). */
   wounds?: number[]
+  /** How many wounds a copy can take before going down (per copy). */
+  maxWounds?: number[]
+  /** Fatigue levels taken, one entry per copy in play. */
+  fatigue?: number[]
   /** Shaken state, one entry per copy in play. */
   shaken?: boolean[]
+  /** Incapacitated mark, one entry per copy in play. */
+  incapacitated?: boolean[]
+  /** Other states in play, per copy: ["distracted", "prone", ...]. */
+  states?: string[][]
 }
 
 /** A GM quick-reference list: a named bag of entry references. */
@@ -210,6 +218,22 @@ interface LibraryState extends PersistedState {
     copy: number,
     wounds: number,
   ) => void
+  /** Resize the wound track of one copy (how many wounds it can take). */
+  setItemMaxWounds: (
+    encounterId: string,
+    sceneId: string,
+    itemId: string,
+    copy: number,
+    max: number,
+  ) => void
+  /** Set the Fatigue level of one copy of an item. */
+  setItemFatigue: (
+    encounterId: string,
+    sceneId: string,
+    itemId: string,
+    copy: number,
+    fatigue: number,
+  ) => void
   /** Toggle the Shaken state of one copy of an item. */
   setItemShaken: (
     encounterId: string,
@@ -217,6 +241,22 @@ interface LibraryState extends PersistedState {
     itemId: string,
     copy: number,
     shaken: boolean,
+  ) => void
+  /** Mark one copy as Incapacitated (down regardless of its wound track). */
+  setItemIncapacitated: (
+    encounterId: string,
+    sceneId: string,
+    itemId: string,
+    copy: number,
+    incapacitated: boolean,
+  ) => void
+  /** Add or drop one state on a copy of an item. */
+  toggleItemState: (
+    encounterId: string,
+    sceneId: string,
+    itemId: string,
+    copy: number,
+    state: string,
   ) => void
   /** Clear every wound and Shaken mark in the scene (end of fight). */
   resetWounds: (encounterId: string, sceneId: string) => void
@@ -546,6 +586,29 @@ export const useLibrary = create<LibraryState>()(
           }),
         }),
 
+      setItemMaxWounds: (encounterId, sceneId, itemId, copy, max) =>
+        set({
+          encounters: mapItem(get().encounters, encounterId, sceneId, itemId, (it) => {
+            const next = (it.maxWounds ?? []).slice()
+            while (next.length <= copy) next.push(0)
+            next[copy] = Math.max(1, max)
+            // A shorter track cannot hold more wounds than it has slots.
+            const wounds = (it.wounds ?? []).slice()
+            if ((wounds[copy] ?? 0) > next[copy]) wounds[copy] = next[copy]
+            return { ...it, maxWounds: next, wounds }
+          }),
+        }),
+
+      setItemFatigue: (encounterId, sceneId, itemId, copy, fatigue) =>
+        set({
+          encounters: mapItem(get().encounters, encounterId, sceneId, itemId, (it) => {
+            const next = (it.fatigue ?? []).slice()
+            while (next.length <= copy) next.push(0)
+            next[copy] = fatigue
+            return { ...it, fatigue: next }
+          }),
+        }),
+
       setItemShaken: (encounterId, sceneId, itemId, copy, shaken) =>
         set({
           encounters: mapItem(get().encounters, encounterId, sceneId, itemId, (it) => {
@@ -556,11 +619,40 @@ export const useLibrary = create<LibraryState>()(
           }),
         }),
 
+      setItemIncapacitated: (encounterId, sceneId, itemId, copy, incapacitated) =>
+        set({
+          encounters: mapItem(get().encounters, encounterId, sceneId, itemId, (it) => {
+            const next = (it.incapacitated ?? []).slice()
+            while (next.length <= copy) next.push(false)
+            next[copy] = incapacitated
+            return { ...it, incapacitated: next }
+          }),
+        }),
+
+      toggleItemState: (encounterId, sceneId, itemId, copy, state) =>
+        set({
+          encounters: mapItem(get().encounters, encounterId, sceneId, itemId, (it) => {
+            const next = (it.states ?? []).map((list) => list.slice())
+            while (next.length <= copy) next.push([])
+            next[copy] = next[copy].includes(state)
+              ? next[copy].filter((x) => x !== state)
+              : [...next[copy], state]
+            return { ...it, states: next }
+          }),
+        }),
+
       resetWounds: (encounterId, sceneId) =>
         set({
           encounters: mapScene(get().encounters, encounterId, sceneId, (sc) => ({
             ...sc,
-            items: sc.items.map((it) => ({ ...it, wounds: [], shaken: [] })),
+            items: sc.items.map((it) => ({
+              ...it,
+              wounds: [],
+              fatigue: [],
+              shaken: [],
+              incapacitated: [],
+              states: [],
+            })),
           })),
         }),
 

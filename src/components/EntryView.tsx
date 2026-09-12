@@ -20,7 +20,6 @@ export function EntryView({ entryKey }: { entryKey: string }) {
   const lang = useContentLang()
   const { t } = useT()
   const sourceName = useSourceName()
-  const deleteEntry = useLibrary((s) => s.deleteEntry)
   const books = useLibrary((s) => s.books)
   const [editing, setEditing] = useState(false)
 
@@ -61,14 +60,6 @@ export function EntryView({ entryKey }: { entryKey: string }) {
             <span className="ml-auto flex items-center gap-2 text-xs">
               <button onClick={() => setEditing(true)} className="text-blood hover:underline">
                 {t.editor.editItem}
-              </button>
-              <button
-                onClick={() => {
-                  if (confirm(t.editor.deleteConfirm)) deleteEntry(entry.source, entry.id)
-                }}
-                className="opacity-50 hover:text-red-500 hover:opacity-100"
-              >
-                {t.editor.delete}
               </button>
             </span>
           )}

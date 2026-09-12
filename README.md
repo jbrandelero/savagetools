@@ -244,6 +244,14 @@ formato de livro em JSON e à documentação que você está lendo.
   [Delapouite](https://delapouite.com/) via
   [game-icons.net](https://game-icons.net/1x1/delapouite/card-joker.html) —
   [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Ícone de Estados (Encontros): “Power button” de
+  [Lord Berandas](https://www.deviantart.com/berandas) via
+  [game-icons.net](https://game-icons.net/1x1/lord-berandas/power-button.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Ícone de Incapacitado (Encontros): “Dead head” de
+  [Delapouite](https://delapouite.com/) via
+  [game-icons.net](https://game-icons.net/1x1/delapouite/dead-head.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 - Ícone de Abalado (Encontros): “Helmet head shot” de
   [Lorc](https://lorcblog.blogspot.com/) via
   [game-icons.net](https://game-icons.net/1x1/lorc/helmet-head-shot.html) —
@@ -479,6 +487,14 @@ format and the documentation you are reading.
 - Wild Card icon (Encounters): “Card joker” by
   [Delapouite](https://delapouite.com/) via
   [game-icons.net](https://game-icons.net/1x1/delapouite/card-joker.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- States icon (Encounters): “Power button” by
+  [Lord Berandas](https://www.deviantart.com/berandas) via
+  [game-icons.net](https://game-icons.net/1x1/lord-berandas/power-button.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Incapacitated icon (Encounters): “Dead head” by
+  [Delapouite](https://delapouite.com/) via
+  [game-icons.net](https://game-icons.net/1x1/delapouite/dead-head.html) —
   [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 - Shaken icon (Encounters): “Helmet head shot” by
   [Lorc](https://lorcblog.blogspot.com/) via

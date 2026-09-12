@@ -1,4 +1,6 @@
+import deadSvg from '@/assets/dead-head.svg'
 import jokerSvg from '@/assets/card-joker.svg'
+import powerSvg from '@/assets/power-button.svg'
 import helmetSvg from '@/assets/helmet-head-shot.svg'
 
 /**
@@ -32,4 +34,14 @@ export function JokerIcon({ className }: { className?: string }) {
 /** Shaken marker: "Helmet head shot" by Lorc (game-icons.net, CC BY 3.0). */
 export function ShakenIcon({ className }: { className?: string }) {
   return <MaskIcon src={helmetSvg} className={className} />
+}
+
+/** Incapacitated marker: "Dead head" by Delapouite (game-icons.net, CC BY 3.0). */
+export function DeadIcon({ className }: { className?: string }) {
+  return <MaskIcon src={deadSvg} className={className} />
+}
+
+/** States menu handle: "Power button" by Lord Berandas (game-icons.net, CC BY 3.0). */
+export function StatesIcon({ className }: { className?: string }) {
+  return <MaskIcon src={powerSvg} className={className} />
 }

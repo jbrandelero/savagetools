@@ -41,7 +41,11 @@ export function Encounters() {
   const removeSceneItem = useLibrary((s) => s.removeSceneItem)
   const reorderSceneItem = useLibrary((s) => s.reorderSceneItem)
   const setItemWounds = useLibrary((s) => s.setItemWounds)
+  const setItemFatigue = useLibrary((s) => s.setItemFatigue)
+  const setItemMaxWounds = useLibrary((s) => s.setItemMaxWounds)
   const setItemShaken = useLibrary((s) => s.setItemShaken)
+  const setItemIncapacitated = useLibrary((s) => s.setItemIncapacitated)
+  const toggleItemState = useLibrary((s) => s.toggleItemState)
   const resetWounds = useLibrary((s) => s.resetWounds)
   const showToast = useToast((s) => s.show)
 
@@ -310,6 +314,18 @@ export function Encounters() {
               byKey={byKey}
               onWounds={(itemId, copy, wounds) =>
                 setItemWounds(enc.id, selScene.id, itemId, copy, wounds)
+              }
+              onFatigue={(itemId, copy, fatigue) =>
+                setItemFatigue(enc.id, selScene.id, itemId, copy, fatigue)
+              }
+              onMaxWounds={(itemId, copy, max) =>
+                setItemMaxWounds(enc.id, selScene.id, itemId, copy, max)
+              }
+              onIncapacitated={(itemId, copy, value) =>
+                setItemIncapacitated(enc.id, selScene.id, itemId, copy, value)
+              }
+              onToggleState={(itemId, copy, state) =>
+                toggleItemState(enc.id, selScene.id, itemId, copy, state)
               }
               onShaken={(itemId, copy, shaken) =>
                 setItemShaken(enc.id, selScene.id, itemId, copy, shaken)
