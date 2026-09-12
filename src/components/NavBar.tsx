@@ -292,6 +292,9 @@ export function NavBar() {
           <NavLink to="/favorites" className={topLink}>
             ★ {t.nav.favorites}
           </NavLink>
+          <NavLink to="/encounters" className={topLink}>
+            ⚔ {t.nav.encounters}
+          </NavLink>
           <NavDivider />
           <NavLink to="/books" className={topLink}>
             {t.nav.books}
@@ -384,6 +387,9 @@ export function NavBar() {
             </NavLink>
             <NavLink to="/favorites" onClick={() => setMenu(false)} className={topLink}>
               ★ {t.nav.favorites}
+            </NavLink>
+            <NavLink to="/encounters" onClick={() => setMenu(false)} className={topLink}>
+              ⚔ {t.nav.encounters}
             </NavLink>
             <NavLink to="/books" onClick={() => setMenu(false)} className={topLink}>
               {t.nav.books}

@@ -240,6 +240,14 @@ formato de livro em JSON e à documentação que você está lendo.
 - Ícone do app: “Mighty spanner” de [Lorc](https://lorcblog.blogspot.com/) via
   [game-icons.net](https://game-icons.net/1x1/lorc/mighty-spanner.html) —
   [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Ícone de Curinga (Encontros): “Card joker” de
+  [Delapouite](https://delapouite.com/) via
+  [game-icons.net](https://game-icons.net/1x1/delapouite/card-joker.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Ícone de Abalado (Encontros): “Helmet head shot” de
+  [Lorc](https://lorcblog.blogspot.com/) via
+  [game-icons.net](https://game-icons.net/1x1/lorc/helmet-head-shot.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 
 ---
 
@@ -467,4 +475,12 @@ format and the documentation you are reading.
 
 - App icon: “Mighty spanner” by [Lorc](https://lorcblog.blogspot.com/) via
   [game-icons.net](https://game-icons.net/1x1/lorc/mighty-spanner.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Wild Card icon (Encounters): “Card joker” by
+  [Delapouite](https://delapouite.com/) via
+  [game-icons.net](https://game-icons.net/1x1/delapouite/card-joker.html) —
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- Shaken icon (Encounters): “Helmet head shot” by
+  [Lorc](https://lorcblog.blogspot.com/) via
+  [game-icons.net](https://game-icons.net/1x1/lorc/helmet-head-shot.html) —
   [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).

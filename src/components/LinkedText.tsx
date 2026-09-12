@@ -2,6 +2,7 @@ import { Fragment, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
 import { useNameIndex, useContentLang, useT } from '@/hooks'
+import { useEntryWindow } from '@/hooks/entryWindows'
 import { useLibrary } from '@/store/useLibrary'
 import { resolveText } from '@/lib/localized'
 import { sourceBadgeStyle } from '@/lib/sources'
@@ -10,9 +11,13 @@ import type { SourcedEntry } from '@/types/entry'
 
 /**
  * Renders plain text, auto-linking any substring that matches a known entry
- * name (in the current content language). Link target preference: an entry in
- * the SAME book as the current record first, then any Core-category book; never
- * other books. No markup is required in the JSON. `selfKey` avoids self-links.
+ * name (in the current content language), ignoring case. Link target preference:
+ * an entry in the SAME book as the current record first, then any Core-category
+ * book, then any other book that has it. No markup is required in the JSON, and
+ * `selfKey` avoids self-links.
+ *
+ * Inside an `EntryWindowProvider` the links open a floating window instead of
+ * navigating away.
  */
 export function LinkedText({
   text,
@@ -39,15 +44,16 @@ export function LinkedText({
     if (start > last) nodes.push(text.slice(last, start))
 
     const candidates = byName.get(matchText.toLowerCase()) ?? []
+    // Prefer the same book, then a Core-category one; otherwise any candidate,
+    // so references still link in libraries with no book marked as Core.
     const target =
       candidates.find((c) => sourceId && c.source === sourceId) ??
-      candidates.find((c) => coreBookIds.has(c.source))
+      candidates.find((c) => coreBookIds.has(c.source)) ??
+      candidates[0]
 
-    // Only link when the occurrence starts with an uppercase letter
-    // ("Agrupar" links, "capa" does not).
-    const startsUpper = /^\p{Lu}/u.test(matchText)
-
-    if (startsUpper && target && target.key !== selfKey) {
+    // Case-insensitive: "Agrupar" and "agrupar" both link. False positives are
+    // handled per-term by `ignoredLinks`.
+    if (target && target.key !== selfKey) {
       nodes.push(
         <EntryLink key={i++} entry={target} label={matchText} lang={lang} />,
       )
@@ -68,6 +74,9 @@ export function LinkedText({
   )
 }
 
+const LINK_CLASS =
+  'text-sky-700 underline decoration-dotted underline-offset-2 hover:decoration-solid dark:text-sky-300'
+
 interface Pos {
   left: number
   top: number
@@ -85,6 +94,7 @@ function EntryLink({
 }) {
   const { t } = useT()
   const navigate = useNavigate()
+  const openWindow = useEntryWindow()
   const ignoreLink = useLibrary((s) => s.ignoreLink)
   const [pos, setPos] = useState<Pos | null>(null)
   const timer = useRef<number | undefined>(undefined)
@@ -105,6 +115,12 @@ function EntryLink({
     )
     setPos({ left, top: above ? r.top - 6 : r.bottom + 6, above })
   }
+  /** Follow the reference: floating window when available, route otherwise. */
+  function go() {
+    setPos(null)
+    if (openWindow) openWindow(entry.key)
+    else navigate(`/entry/${encodeURIComponent(entry.key)}`)
+  }
   function scheduleClose() {
     window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => setPos(null), 160)
@@ -117,12 +133,15 @@ function EntryLink({
       onMouseEnter={open}
       onMouseLeave={scheduleClose}
     >
-      <Link
-        to={`/entry/${encodeURIComponent(entry.key)}`}
-        className="text-sky-700 underline decoration-dotted underline-offset-2 hover:decoration-solid dark:text-sky-300"
-      >
-        {label}
-      </Link>
+      {openWindow ? (
+        <button type="button" onClick={go} className={`inline ${LINK_CLASS}`}>
+          {label}
+        </button>
+      ) : (
+        <Link to={`/entry/${encodeURIComponent(entry.key)}`} className={LINK_CLASS}>
+          {label}
+        </Link>
+      )}
       {pos &&
         createPortal(
           <div
@@ -149,10 +168,7 @@ function EntryLink({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => {
-                        navigate(`/entry/${encodeURIComponent(entry.key)}`)
-                        setPos(null)
-                      }}
+                      onClick={go}
                       className="font-display font-semibold text-sky-700 hover:underline dark:text-sky-300"
                     >
                       {resolveText(entry.name, lang)}

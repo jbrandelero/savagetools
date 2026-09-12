@@ -6,6 +6,7 @@ import { Browse } from '@/pages/Browse'
 import { EntryDetail } from '@/pages/EntryDetail'
 import { Books } from '@/pages/Books'
 import { Favorites } from '@/pages/Favorites'
+import { Encounters } from '@/pages/Encounters'
 import { useLibrary } from '@/store/useLibrary'
 import { useT } from '@/hooks'
 
@@ -19,6 +20,7 @@ const router = createHashRouter([
       { path: 'browse/:type', element: <Browse /> },
       { path: 'entry/:key', element: <EntryDetail /> },
       { path: 'favorites', element: <Favorites /> },
+      { path: 'encounters', element: <Encounters /> },
       { path: 'books', element: <Books /> },
     ],
   },
